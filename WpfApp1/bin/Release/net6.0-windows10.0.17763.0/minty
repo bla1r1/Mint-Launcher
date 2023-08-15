@@ -1,0 +1,24 @@
+{
+    "exec_path": "C:\\Program Files\\Genshin Impact\\Genshin Impact game\\GenshinImpact.exe",
+    "functions": {
+        "AutoTalk": false,
+        "Booty": false,
+        "CutsceneSkip": false,
+        "DumbEnemy": false,
+        "InfBurst": false,
+        "InfStamina": false,
+        "InstantBow": false,
+        "NoCD": false,
+        "NoFallDmg": false,
+        "ShowChest": false
+    },
+    "general": {
+        "ShowFPS": true,
+        "initDelay": 15000,
+        "showRPC": true
+    },
+    "theme": {
+        "color": 1,
+        "style": 1
+    }
+}
