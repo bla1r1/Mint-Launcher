@@ -24,7 +24,21 @@ namespace WpfApp1.View
             InitializeComponent();
         }
 
-        
+        public void MintyGIExist()
+        {
+            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
+            string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
+            if (File.Exists(launcherFilePath))
+            {
+                GI_button.Content = "хУУУУУУУУУУУУУУУУй";
+            }
+            else
+            {
+                GI_button.Content = "Downoad";
+            }
+        }
         
         private async void launch_Click(object sender, RoutedEventArgs e)
         {
