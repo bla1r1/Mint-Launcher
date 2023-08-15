@@ -30,7 +30,6 @@ using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Shell;
-using WpfAnimatedGif;
 using WpfApp1;
 using WpfApp1.ViewModel;
 

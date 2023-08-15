@@ -3137,7 +3137,6 @@
       "path": "microsoft.netcore.windows.apisets/1.0.1",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "microsoft.netcore.windows.apisets.1.0.1.nupkg.sha512",
@@ -8351,23 +8350,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Blair\\.nuget\\packages\\": {},
+    "C:\\Users\\rusla\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Blair\\source\\repos\\Launcher\\WpfApp1\\WpfApp1.csproj",
+      "projectUniqueName": "C:\\Users\\rusla\\OneDrive\\Документы\\GitHub\\Launcher\\WpfApp1\\WpfApp1.csproj",
       "projectName": "Minty",
-      "projectPath": "C:\\Users\\Blair\\source\\repos\\Launcher\\WpfApp1\\WpfApp1.csproj",
-      "packagesPath": "C:\\Users\\Blair\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Blair\\source\\repos\\Launcher\\WpfApp1\\obj\\",
+      "projectPath": "C:\\Users\\rusla\\OneDrive\\Документы\\GitHub\\Launcher\\WpfApp1\\WpfApp1.csproj",
+      "packagesPath": "C:\\Users\\rusla\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\rusla\\OneDrive\\Документы\\GitHub\\Launcher\\WpfApp1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Blair\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\rusla\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

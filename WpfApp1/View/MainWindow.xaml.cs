@@ -36,7 +36,7 @@ namespace WpfApp1
             DragMove();
         }
 
-        private async void checkversion()
+        public async void checkversion()
         {
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -100,7 +100,7 @@ namespace WpfApp1
             }
         }
 
-        private async void LoadLauncherInfo()
+        public async void LoadLauncherInfo()
         {
             string url = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/Version"; // Replace with the actual URL of your JSON file
             string versString = "1.0";
