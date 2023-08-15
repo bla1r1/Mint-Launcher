@@ -22,9 +22,10 @@ namespace WpfApp1.View
         public MintGiPage()
         {
             InitializeComponent();
-            //DiscordRPC();
         }
 
+        
+        
         private async void launch_Click(object sender, RoutedEventArgs e)
         {
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -38,6 +39,7 @@ namespace WpfApp1.View
                     { 
                     //await Task.Delay(2000);
                     LaunchExecutable(launcherFilePath);
+                    DiscordRPC();
                     Application.Current.Shutdown();
                     }
                         else
@@ -49,6 +51,7 @@ namespace WpfApp1.View
                         await ExtractZipFile(zipFilePath, assetsFolderPath);
                         await Task.Delay(2000);
                         LaunchExecutable(launcherFilePath);
+                        DiscordRPC();
                         Application.Current.Shutdown();
                         }
                     }
