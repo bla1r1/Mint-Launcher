@@ -254,7 +254,12 @@ namespace WpfApp1
         #region  
         private void Button_Click_Discord(object sender, RoutedEventArgs e)
         {
-            Close();
+            string link = "https://discord.gg/CpGbZSHKcD";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = link,
+                UseShellExecute = true
+            });
         }
 
         private void Button_Click_Git(object sender, RoutedEventArgs e)

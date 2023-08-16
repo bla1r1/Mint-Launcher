@@ -232,13 +232,13 @@ namespace WpfApp1.View
         }
 
 
-        string TextBlockGIText = "хУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУй ";
+        //string TextBlockGIText = "хУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУй ";
         
 
-        public void changeText(string text)
-        {
-            this.TextBlockGI.Text = "хУУУУУУУУУУУУУУУУй";
-        }
+        //public void changeText(string text)
+        //{
+        //    this.TextBlockGI.Text = "хУУУУУУУУУУУУУУУУй";
+        //}
 
     }
 }
