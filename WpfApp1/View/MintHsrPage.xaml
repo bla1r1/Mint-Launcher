@@ -15,7 +15,7 @@
                Stretch="Fill" Source="/View/Hsr.png"/>
         <Button Content="In Development" HorizontalAlignment="Left" Margin="927,557,0,0" VerticalAlignment="Top" Height="111" Width="313" FontFamily="Comic Sans MS" FontSize="30" Background="#FFEDCC32"/>
         <Image Height="100" Width="100"/>
-        <TextBlock HorizontalAlignment="Left" Height="220" Margin="150,470,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="421" Background="#66000000"/>
+        <!--<TextBlock HorizontalAlignment="Left" Height="220" Margin="150,470,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="421" Background="#66000000"/>
         <TextBlock HorizontalAlignment="Left" Height="42" Margin="150,430,0,0" TextWrapping="Wrap" Text="Changelog" VerticalAlignment="Top" Width="421" Background="#A5000000" FontSize="22" TextAlignment="Center" RenderTransformOrigin="0.5,0.5" Foreground="White">
             <TextBlock.RenderTransform>
                 <TransformGroup>
@@ -25,7 +25,7 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </TextBlock.RenderTransform>
-        </TextBlock>
+        </TextBlock>-->
     </Grid>
 </Page>
 

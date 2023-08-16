@@ -11,14 +11,21 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 using static WpfApp1.MainWindow;
 using DiscordRPC;
+using Octokit;
+using System.Collections.Generic;
 
 namespace WpfApp1.View
 {
     /// <summary>
     /// Логика взаимодействия для MintGiPage.xaml
     /// </summary>
-    public partial class MintGiPage : Page
+    public partial class MintGiPage : System.Windows.Controls.Page
     {
+        string owner = "название_владельца"; // Например, "username"
+        string repo = "название_репозитория"; // Например, "my-private-repo"
+        string token = "ваш_персональный_токен"; // Замените на свой токен
+
+
         public MintGiPage()
         {
             InitializeComponent();
@@ -42,31 +49,33 @@ namespace WpfApp1.View
         
         private async void launch_Click(object sender, RoutedEventArgs e)
         {
+            var client = new GitHubClient(new ProductHeaderValue("GitHubReleaseDownloader"));
+            var tokenAuth = new Credentials(token);
+            client.Credentials = tokenAuth;
+            var releases = await client.Repository.Release.GetAll(owner, repo);
+            var latestRelease = releases[0]; 
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.31/minty1.31.zip";
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty1.31.zip");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
                     if (File.Exists(launcherFilePath))
-                    { 
-                    //await Task.Delay(2000);
+                    {
                     LaunchExecutable(launcherFilePath);
                     DiscordRPC();
-                    Application.Current.Shutdown();
+                    System.Windows.Application.Current.Shutdown();
                     }
                         else
                         {
                         Directory.CreateDirectory(assetsFolderPath);
-                        await DownloadFile(zipUrl, zipFilePath);
                         await Task.Delay(2000);
                         MessageBox.Show("File Downloaded");
                         await ExtractZipFile(zipFilePath, assetsFolderPath);
                         await Task.Delay(2000);
                         LaunchExecutable(launcherFilePath);
                         DiscordRPC();
-                        Application.Current.Shutdown();
+                        System.Windows.Application.Current.Shutdown();
                         }
                     }
 
@@ -81,7 +90,7 @@ namespace WpfApp1.View
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (FileStream fileStream = new FileStream(destinationPath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         await response.Content.CopyToAsync(fileStream);
                     }
@@ -194,7 +203,7 @@ namespace WpfApp1.View
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (FileStream fileStream = new FileStream(tempFilePath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         await response.Content.CopyToAsync(fileStream);
                     }
@@ -217,9 +226,26 @@ namespace WpfApp1.View
             }
         }
 
+        static async Task DownloadReleaseAssetsAsync(string token, IReadOnlyList<ReleaseAsset> assets, string localPath)
+        {
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers.Add("Authorization", $"token {token}");
 
+                foreach (var asset in assets)
+                {
+                    string downloadUrl = asset.BrowserDownloadUrl;
+                    string assetName = asset.Name;
+                    string fullPath = Path.Combine(localPath, assetName);
 
-        private void LaunchExecutable(string exePath)
+                    await webClient.DownloadFileTaskAsync(downloadUrl, fullPath);
+
+                    Console.WriteLine($"Downloaded {assetName}");
+                }
+            }
+        }
+
+            private void LaunchExecutable(string exePath)
         {
             try
             {
@@ -235,10 +261,10 @@ namespace WpfApp1.View
         string TextBlockGIText = "хУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУй ";
         
 
-        public void changeText(string text)
-        {
-            this.TextBlockGI.Text = "хУУУУУУУУУУУУУУУУй";
-        }
+        //public void changeText(string text)
+        //{
+        //    this.TextBlockGI.Text = "хУУУУУУУУУУУУУУУУй";
+        //}
 
     }
 }
