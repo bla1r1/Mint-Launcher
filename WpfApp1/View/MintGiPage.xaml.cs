@@ -47,13 +47,13 @@ namespace WpfApp1.View
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.31/minty1.31.zip";
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty1.31.zip");
+            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.32/minty.zip";
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
                     if (File.Exists(launcherFilePath))
                     { 
                     //await Task.Delay(2000);
                     LaunchExecutable(launcherFilePath);
-                    DiscordRPC();
+                    
                     Application.Current.Shutdown();
                     }
                         else
@@ -65,9 +65,10 @@ namespace WpfApp1.View
                         await ExtractZipFile(zipFilePath, assetsFolderPath);
                         await Task.Delay(2000);
                         LaunchExecutable(launcherFilePath);
-                        DiscordRPC();
+                        
                         Application.Current.Shutdown();
-                        }
+                        
+            }
                     }
 
                   
