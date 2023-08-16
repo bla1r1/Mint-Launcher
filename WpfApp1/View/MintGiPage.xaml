@@ -18,7 +18,7 @@
         <Image Height="100" Width="100"/>
 
         <Image HorizontalAlignment="Left" Height="187" Margin="1059,382,0,0" VerticalAlignment="Top" Width="181" Source="/L_images/araara.png"/>
-        <!--<TextBlock x:Name="TextBlockGI" HorizontalAlignment="Left" Height="220" Margin="150,470,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="421" Background="#66000000"/>
+        <TextBlock x:Name="TextBlockGI" HorizontalAlignment="Left" Height="220" Margin="150,470,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="421" Background="#66000000"/>
         <TextBlock HorizontalAlignment="Left" Height="42" Margin="150,430,0,0" TextWrapping="Wrap" Text="Changelog" VerticalAlignment="Top" Width="421" Background="#A5000000" FontSize="22" TextAlignment="Center" RenderTransformOrigin="0.5,0.5" Foreground="White">
             <TextBlock.RenderTransform>
                 <TransformGroup>
@@ -28,6 +28,6 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </TextBlock.RenderTransform>
-        </TextBlock>-->
+        </TextBlock>
     </Grid>
 </Page>
