@@ -61,7 +61,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.2;
+                    double currentVersion = 1.3;
 
                     if (currentVersion < latestVersion)
                     {
@@ -103,7 +103,7 @@ namespace WpfApp1
         public async void LoadLauncherInfo()
         {
             string url = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/Version"; // Replace with the actual URL of your JSON file
-            string versString = "1.1";
+            string versString = "1.3";
             try
             {
                 using (HttpClient client = new HttpClient())

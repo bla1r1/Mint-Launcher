@@ -41,7 +41,7 @@ namespace WpfApp1.View
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.32/minty.zip";
+            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.33/minty.zip";
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
                 if (File.Exists(launcherFilePath))
                 {
