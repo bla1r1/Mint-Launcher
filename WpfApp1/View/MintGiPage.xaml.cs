@@ -30,14 +30,7 @@ namespace WpfApp1.View
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
-            if (File.Exists(launcherFilePath))
-            {
-                GI_button.Content = "хУУУУУУУУУУУУУУУУй";
-            }
-            else
-            {
-                GI_button.Content = "Downoad";
-            }
+
         }
         
         private async void launch_Click(object sender, RoutedEventArgs e)
@@ -49,27 +42,29 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.32/minty.zip";
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-                    if (File.Exists(launcherFilePath))
-                    { 
-                    //await Task.Delay(2000);
-                    LaunchExecutable(launcherFilePath);
-                    
-                    Application.Current.Shutdown();
-                    }
-                        else
-                        {
-                        Directory.CreateDirectory(assetsFolderPath);
-                        await DownloadFile(zipUrl, zipFilePath);
-                        await Task.Delay(2000);
-                        MessageBox.Show("File Downloaded");
-                        await ExtractZipFile(zipFilePath, assetsFolderPath);
-                        await Task.Delay(2000);
-                        LaunchExecutable(launcherFilePath);
+                if (File.Exists(launcherFilePath))
+                {
+                this.GI_button.Content = "Launch";
+                LaunchExecutable(launcherFilePath);
+                //DiscordRPC();
+                Application.Current.Shutdown();
+                }
+                else
+                {
+                this.GI_button.Content = "Downloading";
+                Directory.CreateDirectory(assetsFolderPath);
+                await DownloadFile(zipUrl, zipFilePath);
+                //await Task.Delay(2000);
+                //MessageBox.Show("File Downloaded");
+                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                //await Task.Delay(2000);
+                this.GI_button.Content = "Launch";
+                LaunchExecutable(launcherFilePath);
+                //DiscordRPC();
+                Application.Current.Shutdown();
                         
-                        Application.Current.Shutdown();
-                        
-            }
-                    }
+                }
+        }
 
                   
 

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:WpfApp1"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:vm="clr-namespace:WpfApp1.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280"
@@ -179,7 +180,7 @@
         </Grid>
 
 
-
+      <!--  <tb:TaskbarIcon Visibility="Visible" ToolTipText="Minty" IconSource="/L_images/virus.ico"/> -->
     </Grid>
 
 </Window>
