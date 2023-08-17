@@ -30,6 +30,7 @@ namespace WpfApp1.View
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
 
         }
         
@@ -47,27 +48,25 @@ namespace WpfApp1.View
                 this.GI_button.Content = "Launch";
                 LaunchExecutable(launcherFilePath);
                 //DiscordRPC();
-                Application.Current.Shutdown();
-                }
+                Environment.Exit(0);
+            }
                 else
                 {
                 this.GI_button.Content = "Downloading";
                 Directory.CreateDirectory(assetsFolderPath);
                 await DownloadFile(zipUrl, zipFilePath);
-                //await Task.Delay(2000);
-                //MessageBox.Show("File Downloaded");
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
-                //await Task.Delay(2000);
+
                 this.GI_button.Content = "Launch";
                 LaunchExecutable(launcherFilePath);
                 //DiscordRPC();
-                Application.Current.Shutdown();
+                Environment.Exit(0);
                         
                 }
         }
 
                   
-
+        
         private async Task DownloadFile(string url, string destinationPath)
         {
             try
