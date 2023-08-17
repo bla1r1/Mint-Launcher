@@ -65,9 +65,9 @@ namespace WpfApp1
 
                     if (currentVersion < latestVersion)
                     {
-                        File.Delete(launcherFilePath);
-                        File.Delete(dllFilePath);
-                        File.Delete(zipFilePath);
+                        //File.Delete(launcherFilePath);
+                        //File.Delete(dllFilePath);
+                        //File.Delete(zipFilePath);
                         string tempFolderPath = System.IO.Path.GetTempPath();
                         string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
                         await DownloadFile("https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe", updateFilePath);

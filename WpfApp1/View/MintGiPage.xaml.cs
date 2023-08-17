@@ -33,7 +33,7 @@ namespace WpfApp1.View
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
 
         }
-        
+
         private async void launch_Click(object sender, RoutedEventArgs e)
         {
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -43,27 +43,40 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.33/minty.zip";
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-                if (File.Exists(launcherFilePath))
+            string filePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string desiredText = "1.32";
+            string fileContent = File.ReadAllText(filePath);
+            if (File.Exists(launcherFilePath))
+            {
+                if (fileContent.Contains(desiredText))
                 {
-                this.GI_button.Content = "Launch";
-                LaunchExecutable(launcherFilePath);
-                //DiscordRPC();
-                Environment.Exit(0);
-            }
+                    if (File.Exists(launcherFilePath))
+                    {
+                        this.GI_button.Content = "Launch";
+                        LaunchExecutable(launcherFilePath);
+                        //DiscordRPC();
+                        Environment.Exit(0);
+                    }
+                }
                 else
                 {
+                    MessageBox.Show("Old launcher");
+                }
+            }
+            else
+            {
                 this.GI_button.Content = "Downloading";
                 Directory.CreateDirectory(assetsFolderPath);
                 await DownloadFile(zipUrl, zipFilePath);
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
-
+                File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
-                LaunchExecutable(launcherFilePath);
-                //DiscordRPC();
-                Environment.Exit(0);
-                        
-                }
+            }
         }
+
+
+
+    
 
                   
         
@@ -144,25 +157,6 @@ namespace WpfApp1.View
             UpdateRPC();
             for (; ; );
         }
-
-        private async Task<string> DownloadVersionText(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    MessageBox.Show("Unable to connect to the web server.");
-                    return null;
-                }
-
-                string versionText = await response.Content.ReadAsStringAsync();
-                return versionText;
-            }
-        }
-
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
             try
@@ -178,42 +172,6 @@ namespace WpfApp1.View
                 MessageBox.Show("Error while extracting the archive: " + ex.Message);
             }
         }
-        private async Task UpdateLauncher(string url, string destinationPath)
-        {
-            string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetFileName(destinationPath));
-
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-
-                    File.Move(tempFilePath, destinationPath);
-                    MessageBox.Show("File downloaded successfully!");
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-        }
-
-
-
         private void LaunchExecutable(string exePath)
         {
             try
