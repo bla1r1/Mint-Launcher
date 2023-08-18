@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.3"
+#define MyAppVersion "1.4"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -25,7 +25,7 @@ UninstallDisplayIcon={app}\MyProgram.exe
 AllowNoIcons=yes
 OutputDir=C:\Users\Blair\Desktop\Mintlauncherinstaller
 OutputBaseFilename=Minty
-SetupIconFile=C:\Users\Blair\Desktop\Launcher\WpfApp1\virus.ico
+SetupIconFile=C:\Users\Blair\source\repos\Launcher\WpfApp1\virus.ico
 Compression=lzma
 SolidCompression=yes
 DisableWelcomePage=False
@@ -42,9 +42,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\Blair\Desktop\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Blair\Desktop\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Blair\Desktop\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

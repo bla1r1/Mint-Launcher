@@ -43,12 +43,14 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.33/minty.zip";
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-            string filePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string desiredText = "1.32";
-            string fileContent = File.ReadAllText(filePath);
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string vertext = "1.33";
+            string verUrl = "https://github.com/bla1r1/Version/releases/download/1.0/version.txt";
+            
             if (File.Exists(launcherFilePath))
             {
-                if (fileContent.Contains(desiredText))
+                string verfileContent = File.ReadAllText(verfilePath);
+                if (verfileContent.Contains(vertext))
                 {
                     if (File.Exists(launcherFilePath))
                     {
@@ -60,13 +62,18 @@ namespace WpfApp1.View
                 }
                 else
                 {
-                    MessageBox.Show("Old launcher");
+                    File.Delete(verfilePath);
+                    File.Delete(launcherFilePath);
+                    File.Delete(dllFilePath);
+                    File.Delete(zipFilePath);
+                    MessageBox.Show("Update Launcher");
                 }
             }
             else
             {
                 this.GI_button.Content = "Downloading";
                 Directory.CreateDirectory(assetsFolderPath);
+                await DownloadFile(verUrl, verfilePath);
                 await DownloadFile(zipUrl, zipFilePath);
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
                 File.Delete(zipFilePath);
