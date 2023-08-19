@@ -53,15 +53,16 @@ namespace WpfApp1
                 {
                     await DownloadFile(vidUrl, vidFilePath);
                 }
+            string verfileContent = File.ReadAllText(logfilePath);
+            if (verfileContent.Contains(logtext))
+            {
 
-                string verfileContent = File.ReadAllText(logfilePath);
-                if (!verfileContent.Contains(logtext))
-                {
-                    VideoWindow videoWindow = new VideoWindow();
-                    videoWindow.Show();
-                }
-            
-
+            }
+            else
+            {
+                VideoWindow videoWindow = new VideoWindow();
+                videoWindow.Show();
+            }
         }
 
 
@@ -91,7 +92,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.4;
+                    double currentVersion = 1.5;
 
                     if (currentVersion < latestVersion)
                     {
@@ -133,7 +134,7 @@ namespace WpfApp1
         public async void LoadLauncherInfo()
         {
             string url = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/Version"; // Replace with the actual URL of your JSON file
-            string versString = "1.4";
+            string versString = "1.5";
             try
             {
                 using (HttpClient client = new HttpClient())

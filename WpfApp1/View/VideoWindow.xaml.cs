@@ -44,19 +44,12 @@ namespace WpfApp1.View
             if (File.Exists(vidFilePath))
             {
                 await DownloadFile(vidUrl, vidFilePath);
-                string verfileContent = File.ReadAllText(logfilePath);
-                if (verfileContent.Contains(logtext))
-                {
-
-
-                }
-                else
-                {
                     //DisableKeyboardForSeconds(55);
                     //DisableMouseForSeconds(55);
                     PlayVideo(vidFilePath);
                     WriteToFile(logfilePath, textToWrite);
-                }
+                    await Task.Delay(55000);
+                    this.Close();
             }
 
         }
