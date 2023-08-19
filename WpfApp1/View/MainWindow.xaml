@@ -178,7 +178,7 @@
 
         </StackPanel>
         </Grid>
-        <!--<MediaElement x:Name="mediaElement" LoadedBehavior="Manual" Height="1920" Width="1080"/>-->
+        
         
 
 

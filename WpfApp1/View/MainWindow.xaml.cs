@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using WpfApp1.View;
 
 namespace WpfApp1
 {
@@ -45,26 +46,21 @@ namespace WpfApp1
             string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
             string logtext = "1";
             string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
-            string textToWrite = "1";
-            if (File.Exists(vidFilePath))
-            {
-                await DownloadFile(vidUrl, vidFilePath);
+                Directory.CreateDirectory(mintyFolderPath);
+                Directory.CreateDirectory(assetsFolderPath);
+                using (File.Create(logfilePath));
+                if (!File.Exists(vidFilePath))
+                {
+                    await DownloadFile(vidUrl, vidFilePath);
+                }
+
                 string verfileContent = File.ReadAllText(logfilePath);
-                if (verfileContent.Contains(logtext))
+                if (!verfileContent.Contains(logtext))
                 {
-
-
+                    VideoWindow videoWindow = new VideoWindow();
+                    videoWindow.Show();
                 }
-                else
-                {
-                    PlayVideo(vidFilePath);
-                    WriteToFile(logfilePath, textToWrite);
-                }
-            }
-            else
-            {
-                
-            }
+            
 
         }
 
@@ -255,36 +251,7 @@ namespace WpfApp1
             }
         }
 
-        private void PlayVideo(string videoPath)
-        {
-            mediaElement.Source = new Uri(videoPath, UriKind.RelativeOrAbsolute);
-            mediaElement.LoadedBehavior = MediaState.Manual; // Устанавливаем ручное управление воспроизведением
-            mediaElement.Play();
 
-            // Отключение клавиатуры
-            PreviewKeyDown += MainWindow_PreviewKeyDown;
-        }
-
-
-        private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            e.Handled = true; // Подавление обработки клавиш
-        }
-
-        static void WriteToFile(string filePath, string text)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(filePath))
-                {
-                    writer.Write(text);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при записи в файл: {ex.Message}");
-            }
-        }
 
         private void updateExecutable(string exePath)
         {
