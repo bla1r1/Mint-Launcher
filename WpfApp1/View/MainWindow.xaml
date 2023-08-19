@@ -122,7 +122,6 @@
         </ControlTemplate>
     </Window.Resources>
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition/>
@@ -131,9 +130,8 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
+        
         <Frame Grid.ColumnSpan="10" Grid.RowSpan="10" NavigationUIVisibility="Hidden" Content="{Binding CurPage}"/>
-
         <Grid Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="2">
             <Label Content="" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="1280" MouseDown="Label_MouseDown"/>
             <Border x:Name="TopMenu1" BorderThickness="0,0,0,1" BorderBrush="#FF303031">
@@ -173,14 +171,18 @@
                         <ImageSource x:Key="png">/L_images/youtube.png</ImageSource>
                     </Button.Resources>
                 </Button>
+                
+        
 
 
 
-            </StackPanel>
+        </StackPanel>
         </Grid>
+        <MediaElement x:Name="mediaElement" LoadedBehavior="Manual" Height="1920" Width="1080"/>
+        
 
 
-      <!--  <tb:TaskbarIcon Visibility="Visible" ToolTipText="Minty" IconSource="/L_images/virus.ico"/> -->
+        <!--  <tb:TaskbarIcon Visibility="Visible" ToolTipText="Minty" IconSource="/L_images/virus.ico"/> -->
     </Grid>
 
 </Window>

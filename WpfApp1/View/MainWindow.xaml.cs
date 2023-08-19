@@ -10,9 +10,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO.Compression;
-
-
-
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace WpfApp1
 {
@@ -26,6 +25,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            video();
             checkversion();
             LoadLauncherInfo();
         }
@@ -36,6 +36,39 @@ namespace WpfApp1
             DragMove();
         }
 
+        public async void video()
+        {
+            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "log");
+            string vidFilePath = System.IO.Path.Combine(assetsFolderPath, "video.mp4");
+            string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
+            string logtext = "1";
+            string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
+            string textToWrite = "1";
+            if (File.Exists(vidFilePath))
+            {
+                await DownloadFile(vidUrl, vidFilePath);
+                string verfileContent = File.ReadAllText(logfilePath);
+                if (verfileContent.Contains(logtext))
+                {
+
+
+                }
+                else
+                {
+                    PlayVideo(vidFilePath);
+                    WriteToFile(logfilePath, textToWrite);
+                }
+            }
+            else
+            {
+                
+            }
+
+        }
+
+
         public async void checkversion()
         {
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
@@ -45,6 +78,7 @@ namespace WpfApp1
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty1.31.zip");
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
             try
             {
                 string versionText = await DownloadVersionText(versionUrl);
@@ -57,7 +91,7 @@ namespace WpfApp1
 
                     if (!Double.TryParse(versionText, out latestVersion))
                     {
-                        MessageBox.Show("Unable to parse: " + versionText);
+                        System.Windows.MessageBox.Show("Unable to parse: " + versionText);
                         return;
                     }
 
@@ -65,9 +99,9 @@ namespace WpfApp1
 
                     if (currentVersion < latestVersion)
                     {
-                        //File.Delete(launcherFilePath);
-                        //File.Delete(dllFilePath);
-                        //File.Delete(zipFilePath);
+                        File.Delete(verfilePath);
+                        File.Delete(launcherFilePath);
+                        File.Delete(dllFilePath);
                         string tempFolderPath = System.IO.Path.GetTempPath();
                         string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
                         await DownloadFile("https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe", updateFilePath);
@@ -78,7 +112,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
         }
 
@@ -91,7 +125,7 @@ namespace WpfApp1
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    MessageBox.Show("Unable to connect to the web server.");
+                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
                     return null;
                 }
 
@@ -126,7 +160,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                System.Windows.MessageBox.Show("Error: " + ex.Message);
             }
         }
 
@@ -159,15 +193,15 @@ namespace WpfApp1
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error downloading file: {ex.Message}");
             }
             catch (IOException ex)
             {
-                MessageBox.Show($"Error saving file: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
 
@@ -184,7 +218,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error while extracting the archive: " + ex.Message);
+                System.Windows.MessageBox.Show("Error while extracting the archive: " + ex.Message);
             }
         }
         private async Task UpdateLauncher(string url, string destinationPath)
@@ -204,37 +238,54 @@ namespace WpfApp1
                     }
 
                     File.Move(tempFilePath, destinationPath);
-                    MessageBox.Show("File downloaded successfully!");
+                    System.Windows.MessageBox.Show("File downloaded successfully!");
                 }
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error downloading file: {ex.Message}");
             }
             catch (IOException ex)
             {
-                MessageBox.Show($"Error saving file: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
 
+        private void PlayVideo(string videoPath)
+        {
+            mediaElement.Source = new Uri(videoPath, UriKind.RelativeOrAbsolute);
+            mediaElement.LoadedBehavior = MediaState.Manual; // Устанавливаем ручное управление воспроизведением
+            mediaElement.Play();
+
+            // Отключение клавиатуры
+            PreviewKeyDown += MainWindow_PreviewKeyDown;
+        }
 
 
-        private void LaunchExecutable(string exePath)
+        private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = true; // Подавление обработки клавиш
+        }
+
+        static void WriteToFile(string filePath, string text)
         {
             try
             {
-                Process.Start(exePath);
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.Write(text);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error launching executable: {ex.Message}");
+                Console.WriteLine($"Ошибка при записи в файл: {ex.Message}");
             }
-
         }
+
         private void updateExecutable(string exePath)
         {
             try
@@ -243,7 +294,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error launching executable: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error launching executable: {ex.Message}");
             }
         }
 
