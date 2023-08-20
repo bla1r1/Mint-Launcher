@@ -52,17 +52,18 @@ namespace WpfApp1
                 if (!File.Exists(vidFilePath))
                 {
                     await DownloadFile(vidUrl, vidFilePath);
-                }
-            string verfileContent = File.ReadAllText(logfilePath);
-            if (verfileContent.Contains(logtext))
-            {
+                string verfileContent = File.ReadAllText(logfilePath);
+                if (verfileContent.Contains(logtext))
+                {
 
+                }
+                else
+                {
+                    VideoWindow videoWindow = new VideoWindow();
+                    videoWindow.Show();
+                }
             }
-            else
-            {
-                VideoWindow videoWindow = new VideoWindow();
-                videoWindow.Show();
-            }
+           
         }
 
 
@@ -74,8 +75,11 @@ namespace WpfApp1
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty1.31.zip");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
+            string tempFolderPath = System.IO.Path.GetTempPath();
+            string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
             try
             {
                 string versionText = await DownloadVersionText(versionUrl);
@@ -99,9 +103,8 @@ namespace WpfApp1
                         File.Delete(verfilePath);
                         File.Delete(launcherFilePath);
                         File.Delete(dllFilePath);
-                        string tempFolderPath = System.IO.Path.GetTempPath();
-                        string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
-                        await DownloadFile("https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe", updateFilePath);
+                        
+                        await DownloadFile(updateUrl, updateFilePath);
                         await Task.Delay(2000);
                         updateExecutable(updateFilePath);
                     }
