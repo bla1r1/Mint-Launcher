@@ -28,7 +28,7 @@ namespace WpfApp1
             InitializeComponent();
             video();
             checkversion();
-            LoadLauncherInfo();
+            
         }
         
 
@@ -84,8 +84,6 @@ namespace WpfApp1
             {
                 string versionText = await DownloadVersionText(versionUrl);
 
-                //versionText = versionText.Replace(".", ",");
-
                 if (versionText != null)
                 {
                     double latestVersion = .0;
@@ -115,64 +113,6 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
         }
-
-        private async Task<string> DownloadVersionText(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
-                    return null;
-                }
-
-                string versionText = await response.Content.ReadAsStringAsync();
-                return versionText;
-            }
-        }
-
-        public async void LoadLauncherInfo()
-        {
-            string url = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/Version"; // Replace with the actual URL of your JSON file
-            string versString = "1.6";
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-                    string json = await response.Content.ReadAsStringAsync();
-
-                    LauncherInfo launcherInfo = JsonConvert.DeserializeObject<LauncherInfo>(json);
-
-
-                    if (launcherInfo != null)
-                    {
-                        double version = launcherInfo.version;
-                        string updateText = launcherInfo.updatetext;
-                        string downloadLink1 = launcherInfo.link1;
-                        string downloadLink2 = launcherInfo.link2;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show("Error: " + ex.Message);
-            }
-        }
-
-        public class LauncherInfo
-        {
-            public double version { get; set; }
-            public string updatetext { get; set; }
-            public string link1 { get; set; }
-            public string link2 { get; set; }
-        }
-
-       
         #region
 
         private async Task DownloadFile(string url, string destinationPath)
@@ -205,56 +145,23 @@ namespace WpfApp1
             }
         }
 
-
-        private async Task ExtractZipFile(string zipFilePath, string extractionPath)
+        private async Task<string> DownloadVersionText(string url)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                await Task.Run(() =>
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
-                });
-
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show("Error while extracting the archive: " + ex.Message);
-            }
-        }
-        private async Task UpdateLauncher(string url, string destinationPath)
-        {
-            string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetFileName(destinationPath));
-
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-
-                    File.Move(tempFilePath, destinationPath);
-                    System.Windows.MessageBox.Show("File downloaded successfully!");
+                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
+                    return null;
                 }
-            }
-            catch (HttpRequestException ex)
-            {
-                System.Windows.MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+
+                string versionText = await response.Content.ReadAsStringAsync();
+                return versionText;
             }
         }
-
 
 
         private void updateExecutable(string exePath)

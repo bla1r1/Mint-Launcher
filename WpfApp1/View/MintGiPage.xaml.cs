@@ -15,6 +15,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Input;
 using System.Security.Cryptography;
+using System.Windows.Ink;
+using Windows.Security.Cryptography.Certificates;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WpfApp1.View
 {
@@ -23,14 +26,14 @@ namespace WpfApp1.View
     /// </summary>
     public partial class MintGiPage : Page
     {
-        private static string key = "hui";
+  
         public MintGiPage()
         {
             InitializeComponent();
         }
 
 
-        private async void launch_Click(object sender, RoutedEventArgs e)
+        public async void launch_Click(object sender, RoutedEventArgs e)
         {
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
@@ -39,26 +42,20 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            //string inputFile = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
-            //string encryptedFile = System.IO.Path.Combine(assetsFolderPath, "encryptedfile.dat");
-            //string decryptedFile = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
+            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
             string zipUrl = "http://138.2.145.17/minty.zip";
-            string vertext = "1.35";
            
 
 
             if (File.Exists(verfilePath))
             {
-                string verfileContent = File.ReadAllText(verfilePath);
-                if (verfileContent.Contains(vertext))
+                bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
+                if (filesAreSame)
                 {
                     if (File.Exists(launcherFilePath))
                     {
-                        //DecryptFile(encryptedFile, decryptedFile);
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
-                        //EncryptFile(inputFile, encryptedFile);
-                        //DiscordRPC();
                         Environment.Exit(0);
                     }
                 }
@@ -77,7 +74,6 @@ namespace WpfApp1.View
                 Directory.CreateDirectory(assetsFolderPath);
                 await DownloadFile(zipUrl, zipFilePath);
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
-                //EncryptFile(inputFile, encryptedFile);
                 File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
             }
@@ -86,20 +82,8 @@ namespace WpfApp1.View
 
 
 
-
         //metods
         #region
-        //SHA256
-        #region
-        private byte[] GetValidKey()
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-                return sha256.ComputeHash(keyBytes);
-            }
-        }
-        #endregion
         //download
         #region
         private async Task DownloadFile(string url, string destinationPath)
@@ -205,37 +189,33 @@ namespace WpfApp1.View
             }
         }
         #endregion
-        //encrypt
+        //checkGiver
         #region
-        private void EncryptFile(string inputFile, string outputFile)
+        private async Task<bool> CheckIfFilesAreSameAsync(string serverFileUrl,string localFilePath)
         {
-            using Aes aesAlg = Aes.Create();
-            aesAlg.Key = GetValidKey();
-            aesAlg.GenerateIV();
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
+                    string localFileContent = await ReadFileAsync(localFilePath);
 
-            using FileStream inputFileStream = new FileStream(inputFile, FileMode.Open);
-            using FileStream encryptedFileStream = new FileStream(outputFile, FileMode.Create);
-            using ICryptoTransform encryptor = aesAlg.CreateEncryptor();
-
-            using CryptoStream cryptoStream = new CryptoStream(encryptedFileStream, encryptor, CryptoStreamMode.Write);
-
-            inputFileStream.CopyTo(cryptoStream);
+                    return serverFileContent == localFileContent;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error checking files: {ex.Message}");
+                return false;
+            }
         }
-        #endregion
-        //decription
-        #region
-        private void DecryptFile(string encryptedFile, string decryptedFile)
+
+        private async Task<string> ReadFileAsync(string filePath)
         {
-            using Aes aesAlg = Aes.Create();
-            aesAlg.Key = GetValidKey();
-
-            using FileStream encryptedFileStream = new FileStream(encryptedFile, FileMode.Open);
-            using FileStream decryptedFileStream = new FileStream(decryptedFile, FileMode.Create);
-            using ICryptoTransform decryptor = aesAlg.CreateDecryptor();
-
-            using CryptoStream cryptoStream = new CryptoStream(encryptedFileStream, decryptor, CryptoStreamMode.Read);
-
-            cryptoStream.CopyTo(decryptedFileStream);
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return await reader.ReadToEndAsync();
+            }
         }
         #endregion
         #endregion
