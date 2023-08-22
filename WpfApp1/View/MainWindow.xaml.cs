@@ -341,19 +341,5 @@ namespace WpfApp1
         }
 
         #endregion
-
-        
-
-        
-        async Task<string> HttpResponse(string line)
-        {
-            using (var net = new HttpClient())
-            {
-                var responce = await net.GetAsync(line);
-                return responce.IsSuccessStatusCode ? await responce.Content.ReadAsStringAsync() : null;
-            }
-        }
-
-
-    }
+         }
 }

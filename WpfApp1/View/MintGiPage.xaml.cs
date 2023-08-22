@@ -11,6 +11,10 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 using static WpfApp1.MainWindow;
 using DiscordRPC;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows.Input;
+using System.Security.Cryptography;
 
 namespace WpfApp1.View
 {
@@ -19,20 +23,12 @@ namespace WpfApp1.View
     /// </summary>
     public partial class MintGiPage : Page
     {
+        private static string key = "hui";
         public MintGiPage()
         {
             InitializeComponent();
         }
 
-        public void MintyGIExist()
-        {
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
-            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
-            string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-
-        }
 
         private async void launch_Click(object sender, RoutedEventArgs e)
         {
@@ -43,10 +39,14 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            //string inputFile = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
+            //string encryptedFile = System.IO.Path.Combine(assetsFolderPath, "encryptedfile.dat");
+            //string decryptedFile = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string zipUrl = "http://138.2.145.17/minty.zip";
             string vertext = "1.35";
            
-            
+
+
             if (File.Exists(verfilePath))
             {
                 string verfileContent = File.ReadAllText(verfilePath);
@@ -54,8 +54,10 @@ namespace WpfApp1.View
                 {
                     if (File.Exists(launcherFilePath))
                     {
+                        //DecryptFile(encryptedFile, decryptedFile);
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
+                        //EncryptFile(inputFile, encryptedFile);
                         //DiscordRPC();
                         Environment.Exit(0);
                     }
@@ -75,6 +77,7 @@ namespace WpfApp1.View
                 Directory.CreateDirectory(assetsFolderPath);
                 await DownloadFile(zipUrl, zipFilePath);
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
+                //EncryptFile(inputFile, encryptedFile);
                 File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
             }
@@ -82,10 +85,23 @@ namespace WpfApp1.View
 
 
 
-    
 
-                  
-        
+
+        //metods
+        #region
+        //SHA256
+        #region
+        private byte[] GetValidKey()
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+                return sha256.ComputeHash(keyBytes);
+            }
+        }
+        #endregion
+        //download
+        #region
         private async Task DownloadFile(string url, string destinationPath)
         {
             try
@@ -115,9 +131,7 @@ namespace WpfApp1.View
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
-
-
-
+        #endregion
         //RPC
         #region
         private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
@@ -152,13 +166,15 @@ namespace WpfApp1.View
             };
             client.SetPresence(presence);
         }
-        #endregion
         public void DiscordRPC()
         {
             InitRPC();
             UpdateRPC();
             for (; ; );
         }
+        #endregion
+        //EXTRACT
+        #region
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
             try
@@ -174,6 +190,9 @@ namespace WpfApp1.View
                 MessageBox.Show("Error while extracting the archive: " + ex.Message);
             }
         }
+        #endregion
+        //launch
+        #region
         private void LaunchExecutable(string exePath)
         {
             try
@@ -185,10 +204,41 @@ namespace WpfApp1.View
                 MessageBox.Show($"Error launching executable: {ex.Message}");
             }
         }
+        #endregion
+        //encrypt
+        #region
+        private void EncryptFile(string inputFile, string outputFile)
+        {
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = GetValidKey();
+            aesAlg.GenerateIV();
 
+            using FileStream inputFileStream = new FileStream(inputFile, FileMode.Open);
+            using FileStream encryptedFileStream = new FileStream(outputFile, FileMode.Create);
+            using ICryptoTransform encryptor = aesAlg.CreateEncryptor();
 
-    
+            using CryptoStream cryptoStream = new CryptoStream(encryptedFileStream, encryptor, CryptoStreamMode.Write);
 
+            inputFileStream.CopyTo(cryptoStream);
+        }
+        #endregion
+        //decription
+        #region
+        private void DecryptFile(string encryptedFile, string decryptedFile)
+        {
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = GetValidKey();
+
+            using FileStream encryptedFileStream = new FileStream(encryptedFile, FileMode.Open);
+            using FileStream decryptedFileStream = new FileStream(decryptedFile, FileMode.Create);
+            using ICryptoTransform decryptor = aesAlg.CreateDecryptor();
+
+            using CryptoStream cryptoStream = new CryptoStream(encryptedFileStream, decryptor, CryptoStreamMode.Read);
+
+            cryptoStream.CopyTo(decryptedFileStream);
+        }
+        #endregion
+        #endregion
     }
 }
 
