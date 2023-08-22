@@ -42,7 +42,7 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
+            string serverFileUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/MintGIVersion";
             string zipUrl = "http://138.2.145.17/minty.zip";
            
 
