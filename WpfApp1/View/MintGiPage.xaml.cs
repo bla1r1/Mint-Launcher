@@ -18,6 +18,8 @@ using System.Security.Cryptography;
 using System.Windows.Ink;
 using Windows.Security.Cryptography.Certificates;
 using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json.Linq;
+
 
 namespace WpfApp1.View
 {
@@ -26,10 +28,14 @@ namespace WpfApp1.View
     /// </summary>
     public partial class MintGiPage : Page
     {
+
+        private readonly HttpClient _httpClient;
   
         public MintGiPage()
         {
             InitializeComponent();
+            _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Minty-Releases"); // Required by GitHub API
         }
 
 
@@ -42,14 +48,41 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string serverFileUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/MintGIVersion";
-            string zipUrl = "http://138.2.145.17/minty.zip";
+
+            //string serverFileUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/MintGIVersion";
+            //string zipUrl = "http://138.2.145.17/minty.zip";
+            string serverFileUrl = "";
+            string zipUrl = "";
+
+            try
+            {
+                var (version, assetUrl, changelog) = await GetLatestReleaseInfoAsync();
+                serverFileUrl = version;
+                zipUrl = assetUrl;
+                this.TextBlockGI.Text = changelog;
+                this.debugtext.AppendText("Latest Version: " + serverFileUrl);
+                this.debugtext.AppendText(Environment.NewLine);
+                this.debugtext.AppendText("Url: " + zipUrl);
+                this.debugtext.AppendText(Environment.NewLine);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
            
 
 
             if (File.Exists(verfilePath))
             {
+                this.debugtext.AppendText("File Exists?: " + File.Exists(verfilePath));
+                this.debugtext.AppendText(Environment.NewLine);
                 bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
+
+                this.debugtext.AppendText("is the Same?: " + filesAreSame);
+                this.debugtext.AppendText(Environment.NewLine);
                 if (filesAreSame)
                 {
                     if (File.Exists(launcherFilePath))
@@ -61,6 +94,7 @@ namespace WpfApp1.View
                 }
                 else
                 {
+                    progressBar.Value = 0;
                     File.Delete(verfilePath);
                     File.Delete(launcherFilePath);
                     File.Delete(dllFilePath);
@@ -72,21 +106,43 @@ namespace WpfApp1.View
             {
                 this.GI_button.Content = "Downloading";
                 Directory.CreateDirectory(assetsFolderPath);
-                await DownloadFile(zipUrl, zipFilePath);
+                this.debugtext.AppendText("Asset Directory: " + assetsFolderPath);
+                this.debugtext.AppendText(Environment.NewLine);
+                var progress = new Progress<int>(value => progressBar.Value = value);
+
+                await DownloadFile(zipUrl, zipFilePath, progress);
+                //aaa
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
                 File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
+                progressBar.Value = 0;
             }
         }
 
 
+        public async Task<(string Version, string AssetUrl, string Changelog)> GetLatestReleaseInfoAsync()
+        {
+            var requestUri = "https://api.github.com/repos/kindawindytoday/Minty-Releases/releases/latest";
+
+            var response = await _httpClient.GetAsync(requestUri);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JObject.Parse(responseContent);
+
+            var version = jsonResponse["tag_name"].ToString();
+            var changelog = jsonResponse["body"].ToString();
+            var assetUrl = jsonResponse["assets"][0]["browser_download_url"].ToString();
+            
+            return (version, assetUrl, changelog);
+        }
 
 
         //metods
         #region
         //download
         #region
-        private async Task DownloadFile(string url, string destinationPath)
+        private async Task DownloadFile(string url, string destinationPath, IProgress<int> progress = null)
         {
             try
             {
@@ -95,9 +151,28 @@ namespace WpfApp1.View
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
+                    var totalBytes = response.Content.Headers.ContentLength ?? -1;
+                    var bytesRead = 0;
+
                     using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        await response.Content.CopyToAsync(fileStream);
+                        using (var contentStream = await response.Content.ReadAsStreamAsync())
+                        {
+                            var buffer = new byte[8192];
+                            int bytesReadLast;
+
+                            while ((bytesReadLast = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, bytesReadLast);
+                                bytesRead += bytesReadLast;
+
+                                if (progress != null && totalBytes > 0)
+                                {
+                                    progress.Report((int)((float)bytesRead / totalBytes * 100));
+                                }
+                            }
+                            //await response.Content.CopyToAsync(fileStream);
+                        }
                     }
 
                 }
@@ -165,7 +240,7 @@ namespace WpfApp1.View
             {
                 await Task.Run(() =>
                 {
-                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
+                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath, true);
                 });
 
             }
@@ -191,16 +266,18 @@ namespace WpfApp1.View
         #endregion
         //checkGiver
         #region
-        private async Task<bool> CheckIfFilesAreSameAsync(string serverFileUrl,string localFilePath)
+        private async Task<bool> CheckIfFilesAreSameAsync(string serverVersion,string localFilePath)
         {
             try
             {
                 using (WebClient client = new WebClient())
                 {
-                    string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
-                    string localFileContent = await ReadFileAsync(localFilePath);
-
-                    return serverFileContent == localFileContent;
+                    //string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
+                    string localVersion = await ReadFileAsync(localFilePath);
+                    this.debugtext.AppendText("Local version:" + localVersion);
+                    this.debugtext.AppendText(Environment.NewLine);
+                    //return serverFileContent == localFileContent;
+                    return serverVersion == localVersion;
                 }
             }
             catch (Exception ex)
