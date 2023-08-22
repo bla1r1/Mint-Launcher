@@ -41,13 +41,13 @@ namespace WpfApp1.View
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipUrl = "https://github.com/kindawindytoday/Minty-Releases/releases/download/1.35/minty.zip";
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "1.35.txt");
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string zipUrl = "http://138.2.145.17/minty.zip";
             string vertext = "1.35";
-            string verUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/1.35.txt";
+           
             
-            if (File.Exists(launcherFilePath))
+            if (File.Exists(verfilePath))
             {
                 string verfileContent = File.ReadAllText(verfilePath);
                 if (verfileContent.Contains(vertext))
@@ -66,14 +66,13 @@ namespace WpfApp1.View
                     File.Delete(launcherFilePath);
                     File.Delete(dllFilePath);
                     File.Delete(zipFilePath);
-                    MessageBox.Show("Update Launcher");
+                    
                 }
             }
             else
             {
                 this.GI_button.Content = "Downloading";
                 Directory.CreateDirectory(assetsFolderPath);
-                await DownloadFile(verUrl, verfilePath);
                 await DownloadFile(zipUrl, zipFilePath);
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
                 File.Delete(zipFilePath);
@@ -117,10 +116,6 @@ namespace WpfApp1.View
             }
         }
 
-        //ReadVersion.txt
-        #region
-
-        #endregion
 
 
         //RPC
@@ -192,13 +187,7 @@ namespace WpfApp1.View
         }
 
 
-        //string TextBlockGIText = "хУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУй ";
-        
-
-        //public void changeText(string text)
-        //{
-        //    this.TextBlockGI.Text = "хУУУУУУУУУУУУУУУУй";
-        //}
+    
 
     }
 }
