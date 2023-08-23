@@ -30,7 +30,7 @@ namespace WpfApp1.View
         public MintGiPage()
         {
             InitializeComponent();
-
+            
         }
 
 
@@ -44,7 +44,7 @@ namespace WpfApp1.View
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
             string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
-            string zipUrl = "http://138.2.145.17/minty.zip";
+            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/minty.zip";
             int a = 1;
 
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
@@ -57,8 +57,8 @@ namespace WpfApp1.View
                     {
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
-                        //DiscordRPC();
                         //mainWindow.MinimizeToTray();
+                        //StartDiscordRPC();
                         Environment.Exit(0);
                     }
                 }
@@ -68,7 +68,13 @@ namespace WpfApp1.View
                     File.Delete(launcherFilePath);
                     File.Delete(dllFilePath);
                     File.Delete(zipFilePath);
-                    
+                    this.GI_button.Content = "Downloading";
+                    await DownloadFile(zipUrl, zipFilePath);
+                    await ExtractZipFile(zipFilePath, assetsFolderPath);
+                    File.Delete(zipFilePath);
+                    string fileContent = File.ReadAllText(verfilePath);
+                    MessageBox.Show("Minty updated to version: " + fileContent,"Updated");
+                    this.GI_button.Content = "Launch";
                 }
             }
             else
@@ -79,6 +85,10 @@ namespace WpfApp1.View
                 await ExtractZipFile(zipFilePath, assetsFolderPath);
                 File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
+                LaunchExecutable(launcherFilePath);
+                //mainWindow.MinimizeToTray();
+                //StartDiscordRPC();
+                Environment.Exit(0);
             }
         }
 
@@ -120,7 +130,7 @@ namespace WpfApp1.View
         }
         #endregion
         //RPC
-        #region
+        #region 
         private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
         public static void InitRPC()
         {
