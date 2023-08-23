@@ -2,20 +2,14 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Button = DiscordRPC.Button;
-using DiscordRPC;
 using System.Net;
 using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.IO.Compression;
-using System.Windows.Controls;
-using System.Windows.Forms;
 using WpfApp1.View;
 using Hardcodet.Wpf.TaskbarNotification;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using DiscordRpcDemo;
 
 namespace WpfApp1
 {
@@ -24,7 +18,8 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         private TaskbarIcon _taskbarIcon;
-
+        private DiscordRpc.EventHandlers handlers;
+        private DiscordRpc.RichPresence presence;
 
         public MainWindow()
         {
@@ -32,6 +27,7 @@ namespace WpfApp1
             video();
             checkversion();
             InitializeTaskbarIcon();
+            DiscordRcp();
         }
         
 
@@ -97,7 +93,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.8;
+                    double currentVersion = 1.9;
 
                     if (currentVersion < latestVersion)
                     {
@@ -115,6 +111,21 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
+        }
+        public async void DiscordRcp()
+        {
+            this.handlers = default(DiscordRpc.EventHandlers);
+            DiscordRpc.Initialize("1112360491847778344", ref this.handlers, true, null);
+            this.handlers = default(DiscordRpc.EventHandlers);
+            DiscordRpc.Initialize("1112360491847778344", ref this.handlers, true, null);
+            this.presence.details = "Minty";
+            this.presence.state = "Hacking MHY <333";
+            this.presence.largeImageKey = "idol";
+            this.presence.smallImageKey = "gensh";
+            this.presence.largeImageText = "Genshin Impact";
+            this.presence.smallImageText = "";
+            DiscordRpc.UpdatePresence(ref this.presence);
+
         }
         //metods
         #region
@@ -168,47 +179,6 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
-        }
-        #endregion
-        //RPC
-        #region
-        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
-        public static void InitRPC()
-        {
-            client.Initialize();
-        }
-
-
-
-        public static void UpdateRPC()
-        {
-            var presence = new RichPresence()
-            {
-                State = "Minty",
-                Details = "Hacking MHY <333",
-
-                Assets = new Assets()
-                {
-                    LargeImageKey = "idol",
-                    SmallImageKey = "gensh",
-                    SmallImageText = "Genshin Impact"
-                },
-                Buttons = new Button[]
-                {
-                        new Button()
-                        {
-                            Label = "Join",
-                            Url = "https://discord.gg/kindawindytoday"
-                        }
-                }
-            };
-            client.SetPresence(presence);
-        }
-        public void DiscordRPC()
-        {
-            InitRPC();
-            UpdateRPC();
-            for (; ; );
         }
         #endregion
         //EXTRACT
@@ -314,6 +284,7 @@ namespace WpfApp1
         }
     
     #endregion
+       
     #endregion
     //Buttons
     #region  
@@ -384,5 +355,5 @@ namespace WpfApp1
         }
 
         #endregion
-         }
+    }
 }

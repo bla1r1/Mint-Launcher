@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.7"
+#define MyAppVersion "1.9"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -44,6 +44,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\discord-rpc-w32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

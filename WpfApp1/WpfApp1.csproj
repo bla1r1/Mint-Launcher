@@ -83,4 +83,7 @@
     <None Remove="View\Hsr.png" />
     <Page Remove="MainWindow - Копировать.xaml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DiscordRpcDemo\" />
+  </ItemGroup>
 </Project>

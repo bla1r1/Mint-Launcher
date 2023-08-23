@@ -138,7 +138,7 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <Frame Grid.ColumnSpan="10" Grid.RowSpan="10" NavigationUIVisibility="Hidden" Content="{Binding CurPage}"/>
         <Grid Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="2">
             <Label Content="" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="1280" MouseDown="Label_MouseDown"/>

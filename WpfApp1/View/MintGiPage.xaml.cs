@@ -6,18 +6,10 @@ using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Button = DiscordRPC.Button;
-using Newtonsoft.Json;
 using System.IO.Compression;
 using static WpfApp1.MainWindow;
-using DiscordRPC;
-using System.Security.Cryptography;
-using System.Text;
-using System.Windows.Input;
-using System.Security.Cryptography;
-using System.Windows.Ink;
-using Windows.Security.Cryptography.Certificates;
-using System.Security.Cryptography.X509Certificates;
+
+
 
 namespace WpfApp1.View
 {
@@ -127,47 +119,6 @@ namespace WpfApp1.View
             {
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
-        }
-        #endregion
-        //RPC
-        #region 
-        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
-        public static void InitRPC()
-        {
-            client.Initialize();
-        }
-
-
-
-        public static void UpdateRPC()
-        {
-            var presence = new RichPresence()
-            {
-                State = "Minty",
-                Details = "Hacking MHY <333",
-
-                Assets = new Assets()
-                {
-                    LargeImageKey = "idol",
-                    SmallImageKey = "gensh",
-                    SmallImageText = "Genshin Impact"
-                },
-                Buttons = new Button[]
-                {
-                        new Button()
-                        {
-                            Label = "Join",
-                            Url = "https://discord.gg/kindawindytoday"
-                        }
-                }
-            };
-            client.SetPresence(presence);
-        }
-        public void DiscordRPC()
-        {
-            InitRPC();
-            UpdateRPC();
-            for (; ; );
         }
         #endregion
         //EXTRACT
