@@ -13,6 +13,9 @@ using System.IO.Compression;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using WpfApp1.View;
+using Hardcodet.Wpf.TaskbarNotification;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace WpfApp1
 {
@@ -20,7 +23,7 @@ namespace WpfApp1
 
     public partial class MainWindow : Window
     {
-        string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private TaskbarIcon _taskbarIcon;
 
 
         public MainWindow()
@@ -28,7 +31,7 @@ namespace WpfApp1
             InitializeComponent();
             video();
             checkversion();
-            
+            InitializeTaskbarIcon();
         }
         
 
@@ -104,7 +107,7 @@ namespace WpfApp1
                         
                         await DownloadFile(updateUrl, updateFilePath);
                         await Task.Delay(2000);
-                        updateExecutable(updateFilePath);
+                        LaunchExecutable(updateFilePath);
                     }
                 }
             }
@@ -113,9 +116,31 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
         }
+        //metods
         #region
+        //dowloadver
+        #region
+        public async Task<string> DownloadVersionText(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-        private async Task DownloadFile(string url, string destinationPath)
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
+                    return null;
+                }
+
+                string versionText = await response.Content.ReadAsStringAsync();
+                return versionText;
+            }
+        }
+        #endregion
+        //download
+        #region
+        public async Task DownloadFile(string url, string destinationPath)
         {
             try
             {
@@ -144,27 +169,69 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
-
-        private async Task<string> DownloadVersionText(string url)
+        #endregion
+        //RPC
+        #region
+        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+        public static void InitRPC()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
-                    return null;
-                }
-
-                string versionText = await response.Content.ReadAsStringAsync();
-                return versionText;
-            }
+            client.Initialize();
         }
 
 
-        private void updateExecutable(string exePath)
+
+        public static void UpdateRPC()
+        {
+            var presence = new RichPresence()
+            {
+                State = "Minty",
+                Details = "Hacking MHY <333",
+
+                Assets = new Assets()
+                {
+                    LargeImageKey = "idol",
+                    SmallImageKey = "gensh",
+                    SmallImageText = "Genshin Impact"
+                },
+                Buttons = new Button[]
+                {
+                        new Button()
+                        {
+                            Label = "Join",
+                            Url = "https://discord.gg/kindawindytoday"
+                        }
+                }
+            };
+            client.SetPresence(presence);
+        }
+        public void DiscordRPC()
+        {
+            InitRPC();
+            UpdateRPC();
+            for (; ; );
+        }
+        #endregion
+        //EXTRACT
+        #region
+        public async Task ExtractZipFile(string zipFilePath, string extractionPath)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
+                });
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Error while extracting the archive: " + ex.Message);
+            }
+        }
+        #endregion
+        //launch
+        #region
+        public void LaunchExecutable(string exePath)
         {
             try
             {
@@ -175,13 +242,82 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error launching executable: {ex.Message}");
             }
         }
-
-
         #endregion
+        //taskbar
+        #region
+        public void InitializeTaskbarIcon()
+        {
+            _taskbarIcon = new TaskbarIcon
+            {
+                //IconSource = new BitmapImage(new Uri("pack://application:,,,/L_images/icon.ico")),
+                ToolTipText = "Minty"
+            };
+            _taskbarIcon.TrayLeftMouseUp += TrayIcon_LeftMouseUp;
+            CreateContextMenu();
+        }
 
-        //Buttons
-        #region  
-        private void Button_Click_Discord(object sender, RoutedEventArgs e)
+
+        public void CreateContextMenu()
+        {
+            System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
+
+            System.Windows.Controls.MenuItem openMenuItem = new System.Windows.Controls.MenuItem();
+            openMenuItem.Header = "Open";
+            openMenuItem.Click += OpenMenuItem_Click;
+            contextMenu.Items.Add(openMenuItem);
+
+            System.Windows.Controls.MenuItem exitMenuItem = new System.Windows.Controls.MenuItem();
+            exitMenuItem.Header = "Exit";
+            exitMenuItem.Click += ExitMenuItem_Click;
+            contextMenu.Items.Add(exitMenuItem);
+
+            _taskbarIcon.ContextMenu = contextMenu;
+        }
+
+        public void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                Hide();
+            }
+        }
+
+        public void OpenMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = WindowState.Normal;
+        }
+
+        public void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            _taskbarIcon.Dispose();
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        public void TrayIcon_LeftMouseUp(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                Show();
+                WindowState = WindowState.Normal;
+            }
+        }
+
+        public void MinimizeToTray()
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        public void MinimizeToTrayButton_Click(object sender, RoutedEventArgs e)
+        {
+            MinimizeToTray();
+        }
+    
+    #endregion
+    #endregion
+    //Buttons
+    #region  
+    private void Button_Click_Discord(object sender, RoutedEventArgs e)
         {
             string link = "https://discord.gg/CpGbZSHKcD";
             Process.Start(new ProcessStartInfo

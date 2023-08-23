@@ -30,6 +30,7 @@ namespace WpfApp1.View
         public MintGiPage()
         {
             InitializeComponent();
+
         }
 
 
@@ -42,11 +43,11 @@ namespace WpfApp1.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string serverFileUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/MintGIVersion";
+            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
             string zipUrl = "http://138.2.145.17/minty.zip";
-           
+            int a = 1;
 
-
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
             if (File.Exists(verfilePath))
             {
                 bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
@@ -56,6 +57,8 @@ namespace WpfApp1.View
                     {
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
+                        //DiscordRPC();
+                        //mainWindow.MinimizeToTray();
                         Environment.Exit(0);
                     }
                 }
