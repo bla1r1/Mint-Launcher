@@ -11,6 +11,8 @@ using WpfApp1.View;
 using Hardcodet.Wpf.TaskbarNotification;
 using DiscordRpcDemo;
 using System.Windows.Forms;
+using DiscordRPC;
+using Button = DiscordRPC.Button;
 
 namespace WpfApp1
 {
@@ -27,7 +29,8 @@ namespace WpfApp1
             InitializeComponent();
             video();
             checkversion();
-            DiscordRcp();
+            //DiscordRcp();
+            DiscordRPC();
             trayIcon = new NotifyIcon();
             trayIcon.Icon = new System.Drawing.Icon("icon.ico");
             trayIcon.Text = "Minty"; 
@@ -98,7 +101,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.10;
+                    double currentVersion = 1.11;
 
                     if (currentVersion < latestVersion)
                     {
@@ -245,7 +248,47 @@ namespace WpfApp1
             this.Hide();
         }
         #endregion
+        //RPC
+        #region
+        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+        public static void InitRPC()
+        {
+            client.Initialize();
+        }
 
+
+
+        public static void UpdateRPC()
+        {
+            var presence = new RichPresence()
+            {
+                State = "Minty",
+                Details = "Hacking MHY <333",
+
+                Assets = new Assets()
+                {
+                    LargeImageKey = "idol",
+                    SmallImageKey = "gensh",
+                    SmallImageText = "Genshin Impact"
+                },
+                Buttons = new Button[]
+                {
+                        new Button()
+                        {
+                            Label = "Join",
+                            Url = "https://discord.gg/kindawindytoday"
+                        }
+                }
+            };
+            client.SetPresence(presence);
+        }
+        public void DiscordRPC()
+        {
+            InitRPC();
+            UpdateRPC();
+            for (; ; );
+        }
+        #endregion
         #endregion
         //Buttons
         #region  

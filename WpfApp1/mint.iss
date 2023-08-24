@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.10"
+#define MyAppVersion "1.11"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
