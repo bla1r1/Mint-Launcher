@@ -98,7 +98,7 @@ namespace WpfApp1
                         return;
                     }
 
-                    double currentVersion = 1.9;
+                    double currentVersion = 1.10;
 
                     if (currentVersion < latestVersion)
                     {

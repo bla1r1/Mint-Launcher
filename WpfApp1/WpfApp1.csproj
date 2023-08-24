@@ -41,15 +41,6 @@
     <Resource Include="L_images\araara.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="L_images\xuinya.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="L_images\Cat2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="L_images\Cat.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="L_images\x.png" />
     <Resource Include="View\Hsr.png" />
   </ItemGroup>

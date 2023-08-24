@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.9"
+#define MyAppVersion "1.10"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -47,6 +47,7 @@ Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10
 Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\discord-rpc-w32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Blair\source\repos\Launcher\WpfApp1\bin\Debug\net6.0-windows10.0.17763.0\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "bin\Debug\net6.0-windows10.0.17763.0\icon.ico"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"

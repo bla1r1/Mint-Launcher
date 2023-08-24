@@ -178,8 +178,10 @@
 
         </StackPanel>
         </Grid>
-        
-        
+        <Image Height="100" Width="100"/>
+        <Image Height="100" Width="100"/>
+
+
 
 
         <!--  <tb:TaskbarIcon Visibility="Visible" ToolTipText="Minty" IconSource="/L_images/virus.ico"/> -->
