@@ -10,6 +10,7 @@ using System.IO.Compression;
 using WpfApp1.View;
 using Hardcodet.Wpf.TaskbarNotification;
 using DiscordRpcDemo;
+using System.Windows.Forms;
 
 namespace WpfApp1
 {
@@ -17,7 +18,7 @@ namespace WpfApp1
 
     public partial class MainWindow : Window
     {
-        private TaskbarIcon _taskbarIcon;
+        private NotifyIcon trayIcon;
         private DiscordRpc.EventHandlers handlers;
         private DiscordRpc.RichPresence presence;
 
@@ -26,8 +27,12 @@ namespace WpfApp1
             InitializeComponent();
             video();
             checkversion();
-            InitializeTaskbarIcon();
             DiscordRcp();
+            trayIcon = new NotifyIcon();
+            trayIcon.Icon = new System.Drawing.Icon("icon.ico");
+            trayIcon.Text = "Minty"; 
+            trayIcon.Visible = true;
+            trayIcon.DoubleClick += TrayIcon_DoubleClick;
         }
         
 
@@ -215,80 +220,36 @@ namespace WpfApp1
         #endregion
         //taskbar
         #region
-        public void InitializeTaskbarIcon()
+        public void TrayIcon_DoubleClick(object sender, EventArgs e)
         {
-            _taskbarIcon = new TaskbarIcon
-            {
-                //IconSource = new BitmapImage(new Uri("pack://application:,,,/L_images/icon.ico")),
-                ToolTipText = "Minty"
-            };
-            _taskbarIcon.TrayLeftMouseUp += TrayIcon_LeftMouseUp;
-            CreateContextMenu();
+            this.Show();
+            this.WindowState = WindowState.Normal;
         }
 
-
-        public void CreateContextMenu()
-        {
-            System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
-
-            System.Windows.Controls.MenuItem openMenuItem = new System.Windows.Controls.MenuItem();
-            openMenuItem.Header = "Open";
-            openMenuItem.Click += OpenMenuItem_Click;
-            contextMenu.Items.Add(openMenuItem);
-
-            System.Windows.Controls.MenuItem exitMenuItem = new System.Windows.Controls.MenuItem();
-            exitMenuItem.Header = "Exit";
-            exitMenuItem.Click += ExitMenuItem_Click;
-            contextMenu.Items.Add(exitMenuItem);
-
-            _taskbarIcon.ContextMenu = contextMenu;
-        }
-
-        public void Window_StateChanged(object sender, EventArgs e)
+        protected override void OnStateChanged(EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
             {
-                Hide();
+                this.Hide();
             }
+            base.OnStateChanged(e);
         }
 
-        public void OpenMenuItem_Click(object sender, EventArgs e)
+        protected override void OnClosed(EventArgs e)
         {
-            Show();
-            WindowState = WindowState.Normal;
+            trayIcon.Dispose();
+            base.OnClosed(e);
         }
-
-        public void ExitMenuItem_Click(object sender, EventArgs e)
-        {
-            _taskbarIcon.Dispose();
-            System.Windows.Application.Current.Shutdown();
-        }
-
-        public void TrayIcon_LeftMouseUp(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Minimized)
-            {
-                Show();
-                WindowState = WindowState.Normal;
-            }
-        }
-
         public void MinimizeToTray()
         {
-            WindowState = WindowState.Minimized;
+            this.Hide();
         }
+        #endregion
 
-        public void MinimizeToTrayButton_Click(object sender, RoutedEventArgs e)
-        {
-            MinimizeToTray();
-        }
-    
-    #endregion
-       
-    #endregion
-    //Buttons
-    #region  
-    private void Button_Click_Discord(object sender, RoutedEventArgs e)
+        #endregion
+        //Buttons
+        #region  
+        private void Button_Click_Discord(object sender, RoutedEventArgs e)
         {
             string link = "https://discord.gg/CpGbZSHKcD";
             Process.Start(new ProcessStartInfo

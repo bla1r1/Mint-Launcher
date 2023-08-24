@@ -49,9 +49,8 @@ namespace WpfApp1.View
                     {
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
-                        //mainWindow.MinimizeToTray();
-                        //StartDiscordRPC();
-                        Environment.Exit(0);
+                        mainWindow.MinimizeToTray();
+                       
                     }
                 }
                 else
@@ -78,9 +77,8 @@ namespace WpfApp1.View
                 File.Delete(zipFilePath);
                 this.GI_button.Content = "Launch";
                 LaunchExecutable(launcherFilePath);
-                //mainWindow.MinimizeToTray();
-                //StartDiscordRPC();
-                Environment.Exit(0);
+                mainWindow.MinimizeToTray();
+              
             }
         }
 
