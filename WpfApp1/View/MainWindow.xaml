@@ -14,6 +14,19 @@
         <vm:MainViewModel/>
     </Window.DataContext>
     <Window.Resources>
+        <tb:TaskbarIcon x:Key="MyTaskbarIcon" IconSource="/L_images/virus.ico">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open" Click="OpenMenuItem_Click"/>
+                    <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+                    <MenuItem Header="Minimize to Tray" Click="MinimizeToTrayMenuItem_Click">
+                        <MenuItem.Icon>
+                            <Image Source="/L_images/virus.ico" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
         <ControlTemplate x:Key="TopMenuButtons" TargetType="Button">
             <Grid Name="Btn" Height="40" Margin="20,0,0,0">
                 <Border>

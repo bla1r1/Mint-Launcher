@@ -11,68 +11,36 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using WpfApp1.View;
 using Hardcodet.Wpf.TaskbarNotification;
-//using DiscordRpcDemo;
 using System.Windows.Forms;
 using DiscordRPC;
 using Button = DiscordRPC.Button;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using System.Security.Policy;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows.Interop;
+using System.Threading;
+using System.Linq;
 #endregion
 namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
-        private NotifyIcon trayIcon;
-
+        public static Mutex mutex = new Mutex(true, "{FE871BB4-5D95-41B1-ADFD-B95113C0B1D3}");
+        private TaskbarIcon taskbarIcon;
         public MainWindow()
         {
             InitializeComponent();
-            video();
+            //mutexapp();
             checkversion();
-            trayicon();
+            InitializeTrayIcon();
             DiscordRPC();
+            video();
         }
         //metods
         #region
-        //dragmove
-        #region
-        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-        #endregion
-        //video
-        #region
-        public async void video()
-        {
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
-            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "log");
-            string vidFilePath = System.IO.Path.Combine(assetsFolderPath, "video.mp4");
-            string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
-            string logtext = "1";
-            string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
-            Directory.CreateDirectory(mintyFolderPath);
-            Directory.CreateDirectory(assetsFolderPath);
-            using (File.Create(logfilePath)) ;
-            if (!File.Exists(vidFilePath))
-            {
-                await DownloadFile(vidUrl, vidFilePath);
-                string verfileContent = File.ReadAllText(logfilePath);
-                if (verfileContent.Contains(logtext))
-                {
-
-                }
-                else
-                {
-                    VideoWindow videoWindow = new VideoWindow();
-                    videoWindow.Show();
-                }
-            }
-
-        }
-        #endregion
         //checkver
         #region
         public async void checkversion()
@@ -121,9 +89,6 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
         }
-        #endregion
-        //dowloadver
-        #region
         public async Task<string> DownloadVersionText(string url)
         {
             using (HttpClient client = new HttpClient())
@@ -140,6 +105,109 @@ namespace WpfApp1
                 string versionText = await response.Content.ReadAsStringAsync();
                 return versionText;
             }
+        }
+        #endregion
+        //taskbar
+        #region
+
+        private void InitializeTrayIcon()
+        {
+            taskbarIcon = new TaskbarIcon();
+            taskbarIcon.Icon = new System.Drawing.Icon("icon.ico");
+            taskbarIcon.ToolTipText = "Minty";
+
+            ContextMenu contextMenu = new ContextMenu();
+
+            MenuItem openMenuItem = new MenuItem() { Header = "Open" };
+            openMenuItem.Click += OpenMenuItem_Click;
+            contextMenu.Items.Add(openMenuItem);
+
+            MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
+            exitMenuItem.Click += ExitMenuItem_Click;
+            contextMenu.Items.Add(exitMenuItem);
+
+            MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
+            minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
+            contextMenu.Items.Add(minimizeToTrayMenuItem);
+
+            taskbarIcon.ContextMenu = contextMenu;
+
+            taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
+
+            taskbarIcon.Visibility = Visibility.Visible;
+        }
+
+        private void OpenMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+        }
+
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            taskbarIcon.Dispose();
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        public void MinimizeToTrayMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
+        private void TaskbarIcon_LeftMouseDown(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+            base.OnStateChanged(e);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            taskbarIcon.Dispose();
+            base.OnClosed(e);
+        }
+        public void MinimizeToTray()
+        {
+            this.Hide();
+        }
+        #endregion
+        //video
+        #region
+        public async void video()
+        {
+            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "log");
+            string vidFilePath = System.IO.Path.Combine(assetsFolderPath, "video.mp4");
+            string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
+            string logtext = "1";
+            string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
+            Directory.CreateDirectory(mintyFolderPath);
+            Directory.CreateDirectory(assetsFolderPath);
+            using (File.Create(logfilePath)) ;
+            if (!File.Exists(vidFilePath))
+            {
+                await DownloadFile(vidUrl, vidFilePath);
+                string verfileContent = File.ReadAllText(logfilePath);
+                if (verfileContent.Contains(logtext))
+                {
+
+                }
+                else
+                {
+                    VideoWindow videoWindow = new VideoWindow();
+                    videoWindow.Show();
+                }
+            }
+
         }
         #endregion
         //download
@@ -174,24 +242,6 @@ namespace WpfApp1
             }
         }
         #endregion
-        //EXTRACT
-        #region
-        public async Task ExtractZipFile(string zipFilePath, string extractionPath)
-        {
-            try
-            {
-                await Task.Run(() =>
-                {
-                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
-                });
-
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show("Error while extracting the archive: " + ex.Message);
-            }
-        }
-        #endregion
         //launch
         #region
         public void LaunchExecutable(string exePath)
@@ -206,45 +256,9 @@ namespace WpfApp1
             }
         }
         #endregion
-        //taskbar
-        #region
-        public void trayicon()
-        {
-            trayIcon = new NotifyIcon();
-            trayIcon.Icon = new System.Drawing.Icon("icon.ico");
-            trayIcon.Text = "Minty";
-            trayIcon.Visible = true;
-            trayIcon.DoubleClick += TrayIcon_DoubleClick;
-
-        }
-        public void TrayIcon_DoubleClick(object sender, EventArgs e)
-        {
-            this.Show();
-            this.WindowState = WindowState.Normal;
-        }
-
-        protected override void OnStateChanged(EventArgs e)
-        {
-            if (WindowState == WindowState.Minimized)
-            {
-                this.Hide();
-            }
-            base.OnStateChanged(e);
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            trayIcon.Dispose();
-            base.OnClosed(e);
-        }
-        public void MinimizeToTray()
-        {
-            this.Hide();
-        }
-        #endregion
         //RPC
         #region
-                 private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
 
         public static void InitRPC()
         {
@@ -290,6 +304,39 @@ namespace WpfApp1
         }
 
 
+        #endregion
+        //if app started
+        #region
+        public static void mutexapp()
+        {
+            App app = new App();
+
+            {
+                if (mutex.WaitOne(TimeSpan.Zero, true))
+                {
+                    try
+                    {
+                        
+                        app.Run(new MainWindow());
+                    }
+                   finally
+                    {
+                        mutex.ReleaseMutex();
+                    }
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Another instance is already running.", "App is already running", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+        #endregion
+        //dragmove
+        #region
+        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
         #endregion
         //Buttons
         #region  
