@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using
+#region
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Net;
@@ -8,24 +10,21 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.IO.Compression;
 using static WpfApp1.MainWindow;
-
-
+#endregion
 
 namespace WpfApp1.View
 {
-    /// <summary>
-    /// Логика взаимодействия для MintGiPage.xaml
-    /// </summary>
     public partial class MintGiPage : Page
     {
   
         public MintGiPage()
         {
             InitializeComponent();
-            
         }
-
-
+        //metods
+        #region
+        //launch
+        #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -50,7 +49,7 @@ namespace WpfApp1.View
                         this.GI_button.Content = "Launch";
                         LaunchExecutable(launcherFilePath);
                         mainWindow.MinimizeToTray();
-                       
+
                     }
                 }
                 else
@@ -64,7 +63,7 @@ namespace WpfApp1.View
                     await ExtractZipFile(zipFilePath, assetsFolderPath);
                     File.Delete(zipFilePath);
                     string fileContent = File.ReadAllText(verfilePath);
-                    MessageBox.Show("Minty updated to version: " + fileContent,"Updated");
+                    MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
                     this.GI_button.Content = "Launch";
                 }
             }
@@ -78,15 +77,10 @@ namespace WpfApp1.View
                 this.GI_button.Content = "Launch";
                 LaunchExecutable(launcherFilePath);
                 mainWindow.MinimizeToTray();
-              
+
             }
         }
-
-
-
-
-        //metods
-        #region
+        #endregion
         //download
         #region
         private async Task DownloadFile(string url, string destinationPath)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using
+#region
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -9,41 +11,39 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using WpfApp1.View;
 using Hardcodet.Wpf.TaskbarNotification;
-using DiscordRpcDemo;
+//using DiscordRpcDemo;
 using System.Windows.Forms;
 using DiscordRPC;
 using Button = DiscordRPC.Button;
-
+using static System.Windows.Forms.AxHost;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using System.Security.Policy;
+#endregion
 namespace WpfApp1
 {
-
-
     public partial class MainWindow : Window
     {
         private NotifyIcon trayIcon;
-        private DiscordRpc.EventHandlers handlers;
-        private DiscordRpc.RichPresence presence;
 
         public MainWindow()
         {
             InitializeComponent();
             video();
             checkversion();
-            //DiscordRcp();
+            trayicon();
             DiscordRPC();
-            trayIcon = new NotifyIcon();
-            trayIcon.Icon = new System.Drawing.Icon("icon.ico");
-            trayIcon.Text = "Minty"; 
-            trayIcon.Visible = true;
-            trayIcon.DoubleClick += TrayIcon_DoubleClick;
         }
-        
-
+        //metods
+        #region
+        //dragmove
+        #region
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
-
+        #endregion
+        //video
+        #region
         public async void video()
         {
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -53,12 +53,12 @@ namespace WpfApp1
             string logfilePath = System.IO.Path.Combine(assetsFolderPath, "log.txt");
             string logtext = "1";
             string vidUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/video.mp4";
-                Directory.CreateDirectory(mintyFolderPath);
-                Directory.CreateDirectory(assetsFolderPath);
-                using (File.Create(logfilePath));
-                if (!File.Exists(vidFilePath))
-                {
-                    await DownloadFile(vidUrl, vidFilePath);
+            Directory.CreateDirectory(mintyFolderPath);
+            Directory.CreateDirectory(assetsFolderPath);
+            using (File.Create(logfilePath)) ;
+            if (!File.Exists(vidFilePath))
+            {
+                await DownloadFile(vidUrl, vidFilePath);
                 string verfileContent = File.ReadAllText(logfilePath);
                 if (verfileContent.Contains(logtext))
                 {
@@ -70,10 +70,11 @@ namespace WpfApp1
                     videoWindow.Show();
                 }
             }
-           
+
         }
-
-
+        #endregion
+        //checkver
+        #region
         public async void checkversion()
         {
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
@@ -108,7 +109,7 @@ namespace WpfApp1
                         File.Delete(verfilePath);
                         File.Delete(launcherFilePath);
                         File.Delete(dllFilePath);
-                        
+
                         await DownloadFile(updateUrl, updateFilePath);
                         await Task.Delay(2000);
                         LaunchExecutable(updateFilePath);
@@ -120,23 +121,7 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error retrieving launcher version: {ex.Message}");
             }
         }
-        public async void DiscordRcp()
-        {
-            this.handlers = default(DiscordRpc.EventHandlers);
-            DiscordRpc.Initialize("1112360491847778344", ref this.handlers, true, null);
-            this.handlers = default(DiscordRpc.EventHandlers);
-            DiscordRpc.Initialize("1112360491847778344", ref this.handlers, true, null);
-            this.presence.details = "Minty";
-            this.presence.state = "Hacking MHY <333";
-            this.presence.largeImageKey = "idol";
-            this.presence.smallImageKey = "gensh";
-            this.presence.largeImageText = "Genshin Impact";
-            this.presence.smallImageText = "";
-            DiscordRpc.UpdatePresence(ref this.presence);
-
-        }
-        //metods
-        #region
+        #endregion
         //dowloadver
         #region
         public async Task<string> DownloadVersionText(string url)
@@ -223,6 +208,15 @@ namespace WpfApp1
         #endregion
         //taskbar
         #region
+        public void trayicon()
+        {
+            trayIcon = new NotifyIcon();
+            trayIcon.Icon = new System.Drawing.Icon("icon.ico");
+            trayIcon.Text = "Minty";
+            trayIcon.Visible = true;
+            trayIcon.DoubleClick += TrayIcon_DoubleClick;
+
+        }
         public void TrayIcon_DoubleClick(object sender, EventArgs e)
         {
             this.Show();
@@ -250,13 +244,18 @@ namespace WpfApp1
         #endregion
         //RPC
         #region
-        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+                 private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+
         public static void InitRPC()
         {
+            client.OnReady += (sender, e) => { };
+
+            client.OnPresenceUpdate += (sender, e) => { };
+
+            client.OnError += (sender, e) => { };
+
             client.Initialize();
         }
-
-
 
         public static void UpdateRPC()
         {
@@ -273,22 +272,24 @@ namespace WpfApp1
                 },
                 Buttons = new Button[]
                 {
-                        new Button()
-                        {
-                            Label = "Join",
-                            Url = "https://discord.gg/kindawindytoday"
-                        }
+                    new Button()
+                    {
+                        Label = "Join",
+                        Url = "https://discord.gg/kindawindytoday"
+                    }
                 }
             };
             client.SetPresence(presence);
+            client.Invoke();
         }
-        public void DiscordRPC()
+
+        public static void DiscordRPC()
         {
             InitRPC();
             UpdateRPC();
-            for (; ; );
         }
-        #endregion
+
+
         #endregion
         //Buttons
         #region  
@@ -320,7 +321,7 @@ namespace WpfApp1
 
             string link = "https://boosty.to/kindawindytoday";
 
-            
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = link,
@@ -359,5 +360,7 @@ namespace WpfApp1
         }
 
         #endregion
+        #endregion
+
     }
 }

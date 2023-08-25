@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using
+#region
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -16,53 +18,78 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Net;
+#endregion
 namespace WpfApp1.View
 {
-    /// <summary>
-    /// Логика взаимодействия для MintHsrPage.xaml
-    /// </summary>
     public partial class MintHsrPage : Page
     {
         public MintHsrPage()
         {
             InitializeComponent();
         }
-        private async void launch_Click(object sender, RoutedEventArgs e)
+        //metods
+        #region
+        //launch
+        #region
+        public async void launch_Click(object sender, RoutedEventArgs e)
         {
-
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
-            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MHsr0.1");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipUrl = "ссылка на архив";
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "имя арзива");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
+            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/minty.zip";
+            int a = 1;
 
-            if (!File.Exists(launcherFilePath))
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            if (File.Exists(verfilePath))
             {
-                Directory.CreateDirectory(assetsFolderPath);
+                bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
+                if (filesAreSame)
+                {
+                    if (File.Exists(launcherFilePath))
+                    {
+                        //this.GI_button.Content = "Launch";
+                        LaunchExecutable(launcherFilePath);
+                        mainWindow.MinimizeToTray();
 
-                await DownloadFile(zipUrl, zipFilePath);
-                await Task.Delay(2000);
-                MessageBox.Show("File Downloaded");
-                await ExtractZipFile(zipFilePath, assetsFolderPath);
-                await Task.Delay(2000);
-                LaunchExecutable(launcherFilePath);
-
-                Application.Current.Shutdown();
+                    }
+                }
+                else
+                {
+                    File.Delete(verfilePath);
+                    File.Delete(launcherFilePath);
+                    File.Delete(dllFilePath);
+                    File.Delete(zipFilePath);
+                    //this.GI_button.Content = "Downloading";
+                    await DownloadFile(zipUrl, zipFilePath);
+                    await ExtractZipFile(zipFilePath, assetsFolderPath);
+                    File.Delete(zipFilePath);
+                    string fileContent = File.ReadAllText(verfilePath);
+                    MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
+                    //this.GI_button.Content = "Launch";
+                }
             }
             else
             {
-                await Task.Delay(2000);
+               //this.GI_button.Content = "Downloading";
+                Directory.CreateDirectory(assetsFolderPath);
+                await DownloadFile(zipUrl, zipFilePath);
+                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                File.Delete(zipFilePath);
+                //this.GI_button.Content = "Launch";
                 LaunchExecutable(launcherFilePath);
+                mainWindow.MinimizeToTray();
 
-                Application.Current.Shutdown();
             }
-
         }
-
-
+        #endregion
+        //download
+        #region
         private async Task DownloadFile(string url, string destinationPath)
         {
             try
@@ -92,8 +119,9 @@ namespace WpfApp1.View
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
-
-
+        #endregion
+        //EXTRACT
+        #region
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
             try
@@ -109,42 +137,9 @@ namespace WpfApp1.View
                 MessageBox.Show("Error while extracting the archive: " + ex.Message);
             }
         }
-        private async Task UpdateLauncher(string url, string destinationPath)
-        {
-            string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetFileName(destinationPath));
-
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-
-                    File.Move(tempFilePath, destinationPath);
-                    MessageBox.Show("File downloaded successfully!");
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-        }
-
-
-
+        #endregion
+        //launch
+        #region
         private void LaunchExecutable(string exePath)
         {
             try
@@ -156,5 +151,37 @@ namespace WpfApp1.View
                 MessageBox.Show($"Error launching executable: {ex.Message}");
             }
         }
+        #endregion
+        //checkGiver
+        #region
+        private async Task<bool> CheckIfFilesAreSameAsync(string serverFileUrl, string localFilePath)
+        {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
+                    string localFileContent = await ReadFileAsync(localFilePath);
+
+                    return serverFileContent == localFileContent;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error checking files: {ex.Message}");
+                return false;
+            }
+        }
+
+        private async Task<string> ReadFileAsync(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return await reader.ReadToEndAsync();
+            }
+        }
+        #endregion
+        #endregion
     }
 }
+
