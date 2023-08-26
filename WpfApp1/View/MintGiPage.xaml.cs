@@ -36,7 +36,7 @@ namespace WpfApp1.View
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
             string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
             string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/minty.zip";
-            int a = 1;
+            
 
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
             if (File.Exists(verfilePath))

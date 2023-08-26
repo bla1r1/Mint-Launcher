@@ -28,7 +28,7 @@ namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
-        public static Mutex mutex = new Mutex(true, "{FE871BB4-5D95-41B1-ADFD-B95113C0B1D3}");
+        
         private TaskbarIcon taskbarIcon;
         public MainWindow()
         {
@@ -309,24 +309,32 @@ namespace WpfApp1
         #region
         public static void mutexapp()
         {
-            App app = new App();
+            bool createdNew;
+            Mutex mutex = new Mutex(true, "{FE871BB4-5D95-41B1-ADFD-B95113C0B1D3}", out createdNew);
 
+            if (!createdNew)
             {
+                // Another instance is already running
+                System.Windows.MessageBox.Show("Another instance is already running.", "App is already running", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                App app = new App();
+
                 if (mutex.WaitOne(TimeSpan.Zero, true))
                 {
-                    try
-                    {
-                        
-                        app.Run(new MainWindow());
-                    }
-                   finally
-                    {
-                        mutex.ReleaseMutex();
-                    }
+                    // Mutex acquired, this instance starts the application
+                    app.Run(new MainWindow());
                 }
-                else
+            }
+            finally
+            {
+                // If the mutex was acquired by this instance, release it
+                if (createdNew)
                 {
-                    System.Windows.MessageBox.Show("Another instance is already running.", "App is already running", MessageBoxButton.OK, MessageBoxImage.Information);
+                    mutex.ReleaseMutex();
                 }
             }
         }
