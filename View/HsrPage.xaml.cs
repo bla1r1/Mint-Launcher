@@ -1,7 +1,18 @@
-using DiscordRPC;
-using System.Diagnostics;
+//usings
+#region
+using System;
+using System.IO;
 using System.IO.Compression;
+using System.Diagnostics;
 using System.Net;
+using DiscordRPC;
+using Button = DiscordRPC.Button;
+using Launcher.View;
+using H.NotifyIcon;
+using Microsoft.Maui.Controls;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using CommunityToolkit.Mvvm.Input;
+#endregion
 
 namespace Launcher.View;
 
