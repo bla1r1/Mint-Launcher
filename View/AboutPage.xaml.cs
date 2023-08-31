@@ -34,11 +34,18 @@ public partial class AboutPage : ContentPage
 	{
 		InitializeComponent();
 	}
-    //buttons
+    //pages
+    #region
+    private void HsrPage(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new HsrPage());
+    }
     private void MainPage(object sender, EventArgs e)
     {
         Navigation.PopToRootAsync();
     }
+    #endregion
+    //buttons
     #region
     private void Button_Click_Discord(object sender, EventArgs e)
     {

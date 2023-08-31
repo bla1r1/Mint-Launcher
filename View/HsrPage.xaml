@@ -1,14 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Launcher"
-             xmlns:tb="https://notifyicon.com/"
-             
-             x:Class="Launcher.MainPage"  
-             WidthRequest="1000"
-             HeightRequest="600"
-             Shell.FlyoutBehavior="Disabled"
-              Shell.NavBarIsVisible="False">
+             x:Class="Launcher.View.HsrPage"
+             >
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="ImageButton" x:Key="ImageButtonstyle">
@@ -35,20 +29,20 @@
 
     <Grid>
         <!--<tb:TaskbarIcon
-            IconSource="virus.ico"
-            x:Name="TrayIcon"
-            LeftClickCommand="{Binding ShowHideWindowCommand}"
-            NoLeftClickDelay="True"
-            >
-            <FlyoutBase.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem Command="{Binding ShowHideWindowCommand}" Text="Show/Hide Window" />
-                    <MenuFlyoutSeparator />
-                    <MenuFlyoutItem Command="{Binding ExitApplicationCommand}" Text="Exit" />
-                </MenuFlyout>
-            </FlyoutBase.ContextFlyout>
-        </tb:TaskbarIcon>-->
-        <Image Source="bgbg.png" />
+        IconSource="virus.ico"
+        x:Name="TrayIcon"
+        LeftClickCommand="{Binding ShowHideWindowCommand}"
+        NoLeftClickDelay="True"
+        >
+        <FlyoutBase.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{Binding ShowHideWindowCommand}" Text="Show/Hide Window" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem Command="{Binding ExitApplicationCommand}" Text="Exit" />
+            </MenuFlyout>
+        </FlyoutBase.ContextFlyout>
+    </tb:TaskbarIcon>-->
+        <Image Source="hsr.png" />
         <Grid.RowDefinitions>
             <RowDefinition Height="600"/>
         </Grid.RowDefinitions>
@@ -57,19 +51,13 @@
         </Grid.ColumnDefinitions>
         <BoxView Color="#152735" Opacity="0.3"/>
 
-        
-        <Grid Margin="110,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="420"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280" />
-                <ColumnDefinition Width="750" />
-            </Grid.ColumnDefinitions>
-            <!--<Image Source="MGI.png" VerticalOptions="StartAndExpand" WidthRequest="280" HeightRequest="56" Margin="240,10,0,0" />-->
-        </Grid>
 
-        <Button VerticalOptions="End" x:Uid="GI_button" x:Name="GI_button" Margin="200,520,0,20" Text="Launch" BackgroundColor="#315779" WidthRequest="200" HeightRequest="65" FontSize="30" TextColor="White" Opacity="0.8" Clicked="Launch_Clicked"/>
+        <StackLayout>
+            <Label WidthRequest="700"  Margin="300,250,0,0" Text="You can buy a license for MHSR on the discord server." FontSize="25" LineBreakMode="NoWrap"/>
+            
+        </StackLayout>
+
+        <Button VerticalOptions="End" x:Name="HSR_button" Margin="200,520,0,20" Text="Launch" BackgroundColor="#315779" WidthRequest="200" HeightRequest="65" FontSize="30" TextColor="White" Opacity="0.8" Clicked="Launch_Clicked"/>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="580"/>
@@ -80,8 +68,8 @@
             <BoxView Color="#223c50" Grid.Row="0" Grid.Column="1" Opacity="0.8" CornerRadius="10" Margin="10,10,0,0" />
             <StackLayout HorizontalOptions="Center">
                 <Image Source="mintylauncher.png" VerticalOptions="Start" />
-                <Button Text="Genshin Impact" VerticalOptions="Start" Style="{StaticResource Navbarbutton}" TextColor="White" Margin="10,0,0,0"/>
-                <Button Text="Honkai:SR" VerticalOptions="Start" Style="{StaticResource Navbarbutton}" Margin="10,0,0,0" Clicked="HsrPage"/>
+                <Button Text="Genshin Impact" VerticalOptions="Start" Style="{StaticResource Navbarbutton}"  Margin="10,0,0,0" Clicked="MainPage"/>
+                <Button Text="Honkai:SR" VerticalOptions="Start" Style="{StaticResource Navbarbutton}" Margin="10,0,0,0" TextColor="White" />
                 <Button Style="{StaticResource NavBarStyle}" />
                 <Button Style="{StaticResource NavBarStyle}" />
                 <Button Style="{StaticResource NavBarStyle}" />

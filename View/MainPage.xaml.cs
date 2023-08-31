@@ -25,15 +25,15 @@ namespace Launcher
             DiscordManager.DiscordRPC();
             BindingContext = this;
         }
-        //aboutpage
+        //pages
         #region
         private void AboutPage(object sender, EventArgs e)
         {
             Navigation.PushAsync(new AboutPage());
         }
-        private void exit(object sender, EventArgs e)
+        private void HsrPage(object sender, EventArgs e)
         {
-            Microsoft.Maui.Controls.Application.Current?.CloseWindow(Microsoft.Maui.Controls.Application.Current.MainPage.Window);
+            Navigation.PushAsync(new HsrPage());
         }
         #endregion
         //launch
@@ -50,8 +50,8 @@ namespace Launcher
             string verfilePath = Path.Combine(assetsFolderPath, "version.txt");
             string tempFolderPath = System.IO.Path.GetTempPath();
             string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
-            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/version.txt";
-            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/minty.zip";
+            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGi.txt";
+            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintyGI.zip";
             string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrl);
@@ -66,7 +66,7 @@ namespace Launcher
                     return;
                 }
 
-                double currentVersion = 1.12;
+                double currentVersion = 1.13;
 
                 if (currentVersion < latestVersion)
                 {
