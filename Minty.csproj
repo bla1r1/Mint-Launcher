@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0-windows10.0.17763.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<StartupObject>Minty.App</StartupObject>
+		<ApplicationIcon>L_images\virus.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Include="L_images\virus.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Costura.Fody" Version="5.7.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+		<PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="L_images\Ayaka.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\AyakaSlideBlur.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\discord.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\boosty.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\github.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\tiktok.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\youtube.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\cat_close_door.gif" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\araara.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\x.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\Hsr.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="L_images\virus.ico" />
+	</ItemGroup>
+</Project>
