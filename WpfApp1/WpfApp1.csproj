@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Minty</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>virus.ico</ApplicationIcon>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <StartupObject>WpfApp1.App</StartupObject>
+    <PlatformTarget>x86</PlatformTarget>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="L_images\Ayaka.png" />
+    <Resource Include="L_images\AyakaSlideBlur.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\discord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\boosty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\github.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\tiktok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\youtube.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\cat_close_door.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\araara.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="L_images\x.png" />
+    <Resource Include="View\Hsr.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="virus.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="5.8.0-alpha0098">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+    <PackageReference Include="Octokit" Version="7.1.0" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="7.0.0-preview.2.22152.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0-preview.7.23375.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="MainWindow - Копировать.xaml.cs" />
+    <None Remove="L_images\AyakaSlideBlur.png" />
+    <None Remove="View\AyakaSlideBlur.png" />
+    <None Remove="View\Hsr.png" />
+    <Page Remove="MainWindow - Копировать.xaml" />
+  </ItemGroup>
+</Project>
