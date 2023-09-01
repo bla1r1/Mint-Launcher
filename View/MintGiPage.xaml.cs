@@ -26,7 +26,6 @@ namespace Minty.View
         //metods
         #region
         //launch
-
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
@@ -63,6 +62,8 @@ namespace Minty.View
                     await DownloadFile(updateUrl, updateFilePath);
                     MessageBox.Show($"Launcher got an update.", "Update");
                     LaunchExecutable(updateFilePath);
+                    Environment.Exit(0);
+
                 }
                 else
                 {

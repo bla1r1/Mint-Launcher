@@ -71,6 +71,7 @@ namespace Minty.View
                     await DownloadFile(updateUrl, updateFilePath);
                     MessageBox.Show($"Launcher got an update.", "Update");
                     LaunchExecutable(updateFilePath);
+                    Environment.Exit(0);
                 }
                 else
                 {

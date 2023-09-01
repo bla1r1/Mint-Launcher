@@ -11,6 +11,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="MauiLauncher\**" />
+	  <EmbeddedResource Remove="MauiLauncher\**" />
+	  <None Remove="MauiLauncher\**" />
+	  <Page Remove="MauiLauncher\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="L_images\virus.ico" />
 	</ItemGroup>
 
