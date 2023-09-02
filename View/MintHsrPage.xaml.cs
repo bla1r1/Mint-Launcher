@@ -41,11 +41,11 @@ namespace Minty.View
 
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
-            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyHSR");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyHSR.zip");
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "versionHSR.txt");
             string tempFolderPath = System.IO.Path.GetTempPath();
             string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
             string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionHSR.txt";
@@ -64,7 +64,7 @@ namespace Minty.View
                     return;
                 }
 
-                double currentVersion = 1.12;
+                double currentVersion = 1.13;
 
                 if (currentVersion < latestVersion)
                 {

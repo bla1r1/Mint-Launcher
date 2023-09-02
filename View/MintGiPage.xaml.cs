@@ -35,7 +35,7 @@ namespace Minty.View
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyGI.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
             string tempFolderPath = System.IO.Path.GetTempPath();
             string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
@@ -55,7 +55,7 @@ namespace Minty.View
                     return;
                 }
 
-                double currentVersion = 1.12;
+                double currentVersion = 1.13;
 
                 if (currentVersion < latestVersion)
                 {
