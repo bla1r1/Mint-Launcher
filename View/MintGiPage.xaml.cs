@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.IO.Compression;
 using static Minty.MainWindow;
+using System.Windows.Media.Effects;
 #endregion
 
 namespace Minty.View
@@ -22,9 +23,31 @@ namespace Minty.View
         public MintGiPage()
         {
             InitializeComponent();
+            ApplyBlurEffect();
+            
         }
         //metods
         #region
+        //video
+        #region
+        private void ApplyBlurEffect()
+        {          
+            BlurEffect blurEffect = new BlurEffect();
+            blurEffect.Radius = 5;
+            TopBorder.Effect = blurEffect;
+            BottomBorder.Effect = blurEffect;
+        }
+        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            // При окончании видео, перезапускайте его
+            backgroundVideo.Position = TimeSpan.Zero;
+            backgroundVideo.Play();
+        }
+        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show("Ошибка при воспроизведении медиа: " + e.ErrorException.Message);
+        }
+        #endregion
         //launch
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)

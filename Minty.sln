@@ -5,32 +5,37 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minty", "Minty.csproj", "{CDAC3C74-328C-46A4-A323-6F0C48805703}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiLauncher", "MauiLauncher\MauiLauncher.csproj", "{938B6326-F42B-4C39-8EF0-D904227C6CD5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		DefaultBuild|Any CPU = DefaultBuild|Any CPU
+		DefaultBuild|x64 = DefaultBuild|x64
+		DefaultBuild|x86 = DefaultBuild|x86
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|x64.Build.0 = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|Any CPU.Build.0 = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|x64.ActiveCfg = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|x64.Build.0 = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|x86.ActiveCfg = Debug|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.DefaultBuild|x86.Build.0 = Debug|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|x64.ActiveCfg = Release|Any CPU
 		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|x64.Build.0 = Release|Any CPU
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Debug|x64.ActiveCfg = Debug|x64
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Debug|x64.Build.0 = Debug|x64
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Release|x64.ActiveCfg = Release|x64
-		{938B6326-F42B-4C39-8EF0-D904227C6CD5}.Release|x64.Build.0 = Release|x64
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDAC3C74-328C-46A4-A323-6F0C48805703}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
