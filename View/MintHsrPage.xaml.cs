@@ -64,12 +64,12 @@ namespace Minty.View
                     return;
                 }
 
-                double currentVersion = 1.13;
+                double currentVersion = 1.14;
 
                 if (currentVersion < latestVersion)
                 {
                     await DownloadFile(updateUrl, updateFilePath);
-                    MessageBox.Show($"Launcher got an update.", "Update");
+                    MessageBox.Show($"Launcher got an update." + "\n" + "If you see this dialog every time, turn on the VPN", "Update");
                     LaunchExecutable(updateFilePath);
                     Environment.Exit(0);
                 }
