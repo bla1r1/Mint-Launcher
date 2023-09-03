@@ -45,11 +45,11 @@ namespace Minty.View
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyHSR.zip");
-            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "versionHSR.txt");
+            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "versionSR.txt");
             string tempFolderPath = System.IO.Path.GetTempPath();
             string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
-            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionHSR.txt";
-            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintyHSr.zip";
+            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionSR.txt";
+            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintySR.zip";
             string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrl);

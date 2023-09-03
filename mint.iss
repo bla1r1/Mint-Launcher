@@ -11,7 +11,7 @@
 #define MyAppSetupName "Minty"
 #define MyAppVersion "1.13"
 #define MyAppPublisher "KW Team"
-#define MyAppExeName "Launcher.exe"
+#define MyAppExeName "Minty.exe"
 
 AppName={#MyAppSetupName}
 AppVersion={#MyAppVersion}
