@@ -7,22 +7,22 @@
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="MintGiPage">
-
     <Grid>
-        <MediaElement x:Name="backgroundVideo"
-                      Source="\L_images\Ayaka.mp4"
-                      LoadedBehavior="Play"
-                      UnloadedBehavior="Manual"
-                      Stretch="UniformToFill"
-                      MediaEnded="MediaElement_MediaEnded" 
-                      MediaFailed="MediaElement_MediaFailed"/>
-                <Button x:Name="GI_button" Content="Launch" HorizontalAlignment="Left" Margin="927,557,0,0" VerticalAlignment="Top" Height="111" Width="313" FontFamily="Comic Sans MS" FontSize="30" Background="#FFEDCC32" Click="launch_Click"/>
+        <MediaElement 
+            x:Name="backgroundVideo"
+            Source="Images/ForegroundGI.mp4"
+            LoadedBehavior="Play"
+            UnloadedBehavior="Manual"
+            Stretch="UniformToFill"
+            MediaEnded="MediaElement_MediaEnded" 
+            MediaFailed="MediaElement_MediaFailed"/>
+        <Button x:Name="GI_button" Content="Launch" HorizontalAlignment="Left" Margin="927,557,0,0" VerticalAlignment="Top" Height="111" Width="313" FontFamily="Comic Sans MS" FontSize="30" Background="#FFEDCC32" Click="launch_Click"/>
         <Image HorizontalAlignment="Left" Height="187" Margin="1059,382,0,0" VerticalAlignment="Top" Width="181" Source="/L_images/araara.png"/>
+        <Border x:Name="BottomBorder" BorderThickness="1" HorizontalAlignment="Left" Height="621" Margin="-5,99,0,0" VerticalAlignment="Top" Width="101"/>
+        <Border x:Name="TopBorder" BorderThickness="1" HorizontalAlignment="Left" Height="99" VerticalAlignment="Top" Width="1286"/>
         <!--<Image Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top"
                Stretch="Fill" Source="\L_images\AyakaTopBlur.png"/>
         <Image Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                Stretch="Fill" Source="\L_images\Ayaka.png"/>-->
-        <Border Name="BottomBorder" BorderThickness="1" HorizontalAlignment="Left" Height="621" Margin="-5,99,0,0" VerticalAlignment="Top" Width="101"/>
-        <Border Name="TopBorder" BorderThickness="1" HorizontalAlignment="Left" Height="99" VerticalAlignment="Top" Width="1286"/>
     </Grid>
 </Page>

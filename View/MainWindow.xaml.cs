@@ -47,7 +47,7 @@ namespace Minty
         private void InitializeTrayIcon()
         {
             taskbarIcon = new TaskbarIcon();
-            taskbarIcon.Icon = new System.Drawing.Icon("icon.ico");
+            taskbarIcon.Icon = new System.Drawing.Icon("Images/icon.ico");
             taskbarIcon.ToolTipText = "Minty";
 
             ContextMenu contextMenu = new ContextMenu();

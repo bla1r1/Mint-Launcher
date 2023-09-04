@@ -23,23 +23,18 @@ namespace Minty.View
         public MintGiPage()
         {
             InitializeComponent();
-            ApplyBlurEffect();
             
+            BlurEffect blurEffect = new BlurEffect();
+            blurEffect.Radius = 100;
+            TopBorder.Effect = blurEffect;
+            BottomBorder.Effect = blurEffect;
         }
         //metods
         #region
         //video
         #region
-        private void ApplyBlurEffect()
-        {          
-            BlurEffect blurEffect = new BlurEffect();
-            blurEffect.Radius = 5;
-            TopBorder.Effect = blurEffect;
-            BottomBorder.Effect = blurEffect;
-        }
         private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            // При окончании видео, перезапускайте его
             backgroundVideo.Position = TimeSpan.Zero;
             backgroundVideo.Play();
         }
