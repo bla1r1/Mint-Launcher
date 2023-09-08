@@ -57,7 +57,7 @@ namespace Minty.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyGI.zip");
             string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
-            string updateFilePath = "update.exe";
+            string updateFilePath = "LauncherUpdater.exe";
             string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGi.txt";
             string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintyGI.zip";
             string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
