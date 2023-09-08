@@ -9,10 +9,13 @@
         mc:Ignorable="d"
         Title="Minty" Height="720" Width="1280"
        WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize"
-        MouseDoubleClick="MainWindow_OnMouseDoubleClick">
+        BorderBrush="Transparent">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
+    <f:AeroGlassChrome.AeroGlassChrome>
+        <f:AeroGlassChrome/>
+    </f:AeroGlassChrome.AeroGlassChrome>
     <Window.Resources>
         <tb:TaskbarIcon x:Key="MyTaskbarIcon" IconSource="/L_images/virus.ico">
             <tb:TaskbarIcon.ContextMenu>
@@ -134,11 +137,8 @@
             </Grid>
         </ControlTemplate>
     </Window.Resources>
-    <f:AeroGlassChrome.AeroGlassChrome>
-        <f:AeroGlassChrome/>
-    </f:AeroGlassChrome.AeroGlassChrome>
+
     <Grid>
-        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition/>
@@ -147,20 +147,17 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
         <Frame Grid.ColumnSpan="10" Grid.RowSpan="10" NavigationUIVisibility="Hidden" Content="{Binding CurPage}"/>
-        <Border x:Name="BottomBorder" BorderThickness="1" HorizontalAlignment="Left" Height="621" Margin="-5,99,0,0" VerticalAlignment="Top" Width="101" f:AeroGlassChrome.IsHitTestVisibleInChrome="True"/>
-        <Border x:Name="TopBorder" BorderThickness="1" HorizontalAlignment="Left" Height="99" VerticalAlignment="Top" Width="1286" f:AeroGlassChrome.IsHitTestVisibleInChrome="True"/>
-        <Grid Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="2">
             <Label Content="" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="1280" MouseDown="Label_MouseDown"/>
             <Border x:Name="TopMenu1" BorderThickness="0,0,0,1" BorderBrush="#FF303031">
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="launch" Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty GI" Command="{Binding OpenMintGiPage}"/>
-                    <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty HSR" Command="{Binding OpenMintHsrPage}"/>
-                    <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="About" Command="{Binding OpenAboutPage}"/>
-                </StackPanel>
-            </Border>
-        </Grid>
+          <StackPanel Orientation="Horizontal" f:AeroGlassChrome.IsHitTestVisibleInChrome="True">
+            <Button x:Name="launch" Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty GI" Command="{Binding OpenMintGiPage}"/>
+            <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty HSR" Command="{Binding OpenMintHsrPage}"/>
+            <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="About" Command="{Binding OpenAboutPage}"/>
+          </StackPanel>
+    </Border>
+     </Grid>
         <Grid Name="SlideMenu" Grid.Column="0" Grid.Row="1">
             <Border BorderThickness="0,0,1,0" BorderBrush="#FF303031"/>
             <Border BorderThickness="0" Opacity="0.6"/>
@@ -190,19 +187,8 @@
                         <ImageSource x:Key="png">/L_images/youtube.png</ImageSource>
                     </Button.Resources>
                 </Button>
-
-
-
-
-
             </StackPanel>
         </Grid>
-        <Image Height="100" Width="100"/>
-        <Image Height="100" Width="100"/>
-
-
-
-
         <!--  <tb:TaskbarIcon Visibility="Visible" ToolTipText="Minty" IconSource="/L_images/virus.ico"/> -->
     </Grid>
 

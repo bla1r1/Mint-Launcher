@@ -1,0 +1,16 @@
+﻿<Window x:Class="LauncherUpdater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LauncherUpdater"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize" Width="600" Height="300" Background="Black">
+    <Grid>
+        <TextBlock Foreground="Gold" Height="37" Margin="135,10,135,0" TextWrapping="Wrap" Text="Launcher got an update." VerticalAlignment="Top" FontSize="30"/>
+        <TextBlock Foreground="Gold" HorizontalAlignment="Center" Height="50" TextWrapping="Wrap" Text="If you see this dialog every time, turn on the VPN" VerticalAlignment="Top" Width="440" FontSize="20" Margin="0,55,0,0"/>
+        <ProgressBar Margin="30,209,30,70" x:Name="ProgressBar"/>
+        <Button Background="#FFEDCC32" Content="Update" Margin="150,235,309,10" Click="Update" x:Name="up"/>
+        <Button Background="#FFEDCC32" Content="Close" Margin="309,235,150,10" Click="Close" x:Name="cl"/>
+    </Grid>
+</Window>
