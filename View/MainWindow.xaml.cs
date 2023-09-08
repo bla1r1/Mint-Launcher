@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Interop;
 using System.Threading;
 using System.Linq;
+using FluentWpfChromes;
 #endregion
 
 namespace Minty
@@ -286,9 +287,8 @@ namespace Minty
         #endregion
         //mutex
         #region
-       
-        #endregion
-        #endregion
 
+        #endregion
+        #endregion
     }
 }

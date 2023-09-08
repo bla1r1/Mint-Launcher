@@ -11,6 +11,8 @@ using System.Windows.Controls;
 using System.IO.Compression;
 using static Minty.MainWindow;
 using System.Windows.Media.Effects;
+using FluentWpfChromes;
+using System.Windows.Input;
 #endregion
 
 namespace Minty.View
@@ -23,11 +25,6 @@ namespace Minty.View
         public MintGiPage()
         {
             InitializeComponent();
-            
-            BlurEffect blurEffect = new BlurEffect();
-            blurEffect.Radius = 100;
-            TopBorder.Effect = blurEffect;
-            BottomBorder.Effect = blurEffect;
         }
         //metods
         #region
