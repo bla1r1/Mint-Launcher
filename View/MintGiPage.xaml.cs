@@ -14,6 +14,10 @@ using System.Windows.Media.Effects;
 using FluentWpfChromes;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Octokit;
+using Page = System.Windows.Controls.Page;
+using System.Collections.Generic;
+using System.Linq;
 #endregion
 
 namespace Minty.View
@@ -33,37 +37,32 @@ namespace Minty.View
         }
         //Metods
         #region
-        //Backgroundvideo
-        #region
-        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            backgroundVideo.Position = TimeSpan.Zero;
-            backgroundVideo.Play();
-        }
-        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            MessageBox.Show("Ошибка при воспроизведении медиа: " + e.ErrorException.Message);
-        }
-        #endregion
         //Launch
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
-
+            string accessToken = "Ваш_токен_доступа";
+            string owner = "Username";
+            string repositoryName = "Repository";
+            var client = new GitHubClient(new ProductHeaderValue("SomeName"));
+            var tokenAuth = new Credentials(accessToken);
+            client.Credentials = tokenAuth;
+            var releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            var latestRelease = releases[0];
+            var asset = latestRelease.Assets.FirstOrDefault();
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyGI.zip");
-            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "version.txt");
             string updateFilePath = "LauncherUpdater.exe";
             string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGi.txt";
             string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintyGI.zip";
             string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrl);
-            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
             if (versionText != null)
             {
                 double latestVersion = .0;
@@ -83,53 +82,15 @@ namespace Minty.View
                 }
                 else
                 {
-                    if (!File.Exists(verfilePath))
+                    if (!File.Exists(launcherFilePath))
                     {
-                        GI_button.Visibility = Visibility.Hidden;
-                        ProgressBar.Visibility = Visibility.Visible;
-                        ProgressBar.Value = 0;
-                        timer.Start();
-                        Directory.CreateDirectory(assetsFolderPath);
-                        Directory.CreateDirectory(mintyFolderPath);
-                        await DownloadFile(zipUrl, zipFilePath);
-                        await ExtractZipFile(zipFilePath, assetsFolderPath);
-                        File.Delete(zipFilePath);
-                        ProgressBar.Visibility = Visibility.Hidden;
-                        GI_button.Visibility = Visibility.Visible;
-                        LaunchExecutable(launcherFilePath);
-                        mainWindow.MinimizeToTray();
+                        MessageBox.Show("1");
                     }
                     else
                     {
-                        bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
-                        if (filesAreSame)
-                        {
-                            if (File.Exists(launcherFilePath))
-                            {
-                                
-                                LaunchExecutable(launcherFilePath);
-                                mainWindow.MinimizeToTray();
-                            }
-                        }
-                        else
-                        {
-                            GI_button.Visibility = Visibility.Hidden;
-                            ProgressBar.Visibility = Visibility.Visible;
-                            ProgressBar.Value = 0;
-                            timer.Start();
-                            File.Delete(dllFilePath);
-                            File.Delete(verfilePath);
-                            File.Delete(launcherFilePath);
-                            await DownloadFile(zipUrl, zipFilePath);
-                            await ExtractZipFile(zipFilePath, assetsFolderPath);
-                            File.Delete(zipFilePath);
-                            string fileContent = File.ReadAllText(verfilePath);
-                            ProgressBar.Visibility = Visibility.Hidden;
-                            GI_button.Visibility = Visibility.Visible;
-                            MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
-                            mainWindow.MinimizeToTray();
-                        }
+                        MessageBox.Show("2");
                     }
+                    
                 }
             }
         }
@@ -156,7 +117,7 @@ namespace Minty.View
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (FileStream fileStream = new FileStream(destinationPath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         long totalBytes = response.Content.Headers.ContentLength ?? -1;
                         long downloadedBytes = 0;
