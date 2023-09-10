@@ -41,15 +41,17 @@ namespace Minty.View
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
-            string accessToken = "Ваш_токен_доступа"; 
-            string owner = "Username";
-            string repositoryName = "Repository";
-            var client = new GitHubClient(new ProductHeaderValue("SomeName"));
+            string accessToken = "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"; 
+            string owner = "kindawindytoday";
+            string repositoryName = "Minty-Releases";
+            string verfileName = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/ver";
+            var client = new GitHubClient(new ProductHeaderValue("Launcher"));
             var tokenAuth = new Credentials(accessToken);
             client.Credentials = tokenAuth;
             var releases = await client.Repository.Release.GetAll(owner, repositoryName);
             var latestRelease = releases[0];
             var asset = latestRelease.Assets.FirstOrDefault();
+            var asset2 = latestRelease.Assets.FirstOrDefault(a => a.Name == verfileName);
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
@@ -57,11 +59,10 @@ namespace Minty.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string updateFilePath = "LauncherUpdater.exe";
-            string verfileName = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGI.txt";
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrl);
             MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
-            string downloadUrl = asset.BrowserDownloadUrl;
+            
             if (versionText != null)
             {
                 double latestVersion = .0;
@@ -81,26 +82,46 @@ namespace Minty.View
                 }
                 else
                 {
+                    
                     if (!File.Exists(launcherFilePath))
                     {
-                        using (var webClient = new WebClient())
+                        if (asset != null)
                         {
-                            await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                            string downloadUrl = asset.BrowserDownloadUrl;
+                            using (var webClient = new WebClient())
+                            {
+                                await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), "minty.zip");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Asset не найден. Возможно, имя файла не совпадает.");
+                            // Обработка ситуации, когда asset равен null
                         }
                     }
                     else
                     {
-                        string verfileContent = await DownloadVerfileContentAsync(asset.BrowserDownloadUrl);
-
-                        Version latestGitHubVersion = new Version(latestRelease.TagName);
-                        int versionComparison = latestGitHubVersion.CompareTo(new Version(verfileContent));
-                        if (versionComparison < 0)
+                        try
                         {
-                            MessageBox.Show("a");
+                            if (asset != null)
+                            {
+                              
+                            }
+                            string verfileContent = await DownloadVerfileContentAsync(asset.BrowserDownloadUrl);
+                            Version latestGitHubVersion = new Version(latestRelease.TagName);
+                            int versionComparison = latestGitHubVersion.CompareTo(new Version(verfileContent));
+                            if (versionComparison < 0)
+                            {
+                                MessageBox.Show("a");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Е");
+                            }
                         }
-                        else
+                        catch
                         {
-                            MessageBox.Show("Е");
+                            MessageBox.Show("sdff");
                         }
                     }
                     
