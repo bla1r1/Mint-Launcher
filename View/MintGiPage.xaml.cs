@@ -56,9 +56,11 @@ namespace Minty.View
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
+            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
+            string verUrl = "https://github.com/rusya222/LauncherVer/raw/main/ver.txt"; 
             string updateFilePath = "LauncherUpdater.exe";
-            string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
-            string versionText = await DownloadVersionText(versionUrl);
+            string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
+            string versionText = await DownloadVersionText(versionUrllauncher);
             MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
             
             if (versionText != null)
@@ -89,20 +91,24 @@ namespace Minty.View
 
                             try
                             {
+                                Directory.CreateDirectory(assetsFolderPath);
+                                Directory.CreateDirectory(mintyFolderPath);
                                 using (var webClient = new WebClient())
                                 {
                                     await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
-                                }
-                                // Файл успешно скачан и сохранен по указанному пути
+                                }   
+                                await DownloadFile(verUrl, verFilePath);
+                                //await ExtractZipFile(zipFilePath, assetsFolderPath);
+                                //File.Delete(zipFilePath);
+                                //LaunchExecutable(launcherFilePath);
+                                //mainWindow.MinimizeToTray();
                             }
                             catch (WebException ex)
-                            {
-                                // Обработка исключения, связанного с сетевыми проблемами
+                            {  
                                 MessageBox.Show("Произошла ошибка при скачивании файла: " + ex.Message);
                             }
                             catch (Exception ex)
-                            {
-                                // Обработка других исключений
+                            {    
                                 MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message);
                             }
 
@@ -116,39 +122,38 @@ namespace Minty.View
                     {
                         try
                         {
-                            string verfileUrl = "https://github.com/rusya222/LauncherVer/blob/main/ver.txt";
-                            string verfileContent = await DownloadVerfileContentAsync(verfileUrl);
+                            string VerText = File.ReadAllText(verFilePath);
                             Version localVersion;
 
-                            if (Version.TryParse(verfileContent, out localVersion))
+                            if (Version.TryParse(VerText, out localVersion))
                             {
-                                if (asset != null)
-                                {
-                                    Version latestGitHubVersion = new Version(latestRelease.TagName);
+                                string githubVersionTag = latestRelease.TagName;
+                                Version githubVersion;
 
-                                    int versionComparison = latestGitHubVersion.CompareTo(localVersion);
+                                if (Version.TryParse(githubVersionTag, out githubVersion))
+                                {
+                                    int versionComparison = githubVersion.CompareTo(localVersion);
 
                                     if (versionComparison < 0)
                                     {
-                                        MessageBox.Show("Локальная версия устарела");
-                                    }
-                                    else if (versionComparison > 0)
-                                    {
-                                        MessageBox.Show("Локальная версия новее");
+                                        MessageBox.Show("Локальная версия устарела.");
                                     }
                                     else
                                     {
-                                        MessageBox.Show("Локальная версия и версия на GitHub равны");
+                                        MessageBox.Show("Локальная версия и версия на GitHub равны.");
                                     }
                                 }
+                                else
+                                {
+                                    MessageBox.Show($"Некорректный формат версии на GitHub: {githubVersionTag}");
+                                }
+                            }
                             else
                             {
-                                // Обработка случая, когда версию не удалось разобрать
-                                MessageBox.Show("Некорректный формат версии: " + verfileContent);
-                            }
-                            
+                                MessageBox.Show($"Некорректный формат версии в локальном файле: {VerText}");
                             }
                         }
+
                         catch (WebException ex)
                         {
                             // Обработка ошибки сетевого запроса, если она возникла
