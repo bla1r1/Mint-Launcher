@@ -41,7 +41,7 @@ namespace Minty.View
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
-            string accessToken = "Ваш_токен_доступа";
+            string accessToken = "Ваш_токен_доступа"; 
             string owner = "Username";
             string repositoryName = "Repository";
             var client = new GitHubClient(new ProductHeaderValue("SomeName"));
@@ -55,14 +55,13 @@ namespace Minty.View
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyGI.zip");
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string updateFilePath = "LauncherUpdater.exe";
-            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGi.txt";
-            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintyGI.zip";
-            string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
+            string verfileName = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionGI.txt";
             string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrl);
             MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
+            string downloadUrl = asset.BrowserDownloadUrl;
             if (versionText != null)
             {
                 double latestVersion = .0;
@@ -84,11 +83,25 @@ namespace Minty.View
                 {
                     if (!File.Exists(launcherFilePath))
                     {
-                        MessageBox.Show("1");
+                        using (var webClient = new WebClient())
+                        {
+                            await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("2");
+                        string verfileContent = await DownloadVerfileContentAsync(asset.BrowserDownloadUrl);
+
+                        Version latestGitHubVersion = new Version(latestRelease.TagName);
+                        int versionComparison = latestGitHubVersion.CompareTo(new Version(verfileContent));
+                        if (versionComparison < 0)
+                        {
+                            MessageBox.Show("a");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Е");
+                        }
                     }
                     
                 }
@@ -173,25 +186,28 @@ namespace Minty.View
         #endregion
         //CheckLauncherVer + CheckMintVer
         #region
-        private async Task<bool> CheckIfFilesAreSameAsync(string serverFileUrl, string localFilePath)
+        private async Task<string> DownloadVerfileContentAsync(string verfileUrl)
         {
-            try
+            using (var httpClient = new HttpClient())
             {
-                using (WebClient client = new WebClient())
+                try
                 {
-                    string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
-                    string localFileContent = await ReadFileAsync(localFilePath);
-
-                    return serverFileContent == localFileContent;
+                    var response = await httpClient.GetAsync(verfileUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error checking files: {ex.Message}");
-                return false;
-            }
+                catch (Exception ex)
+                {
+                    // Обработайте ошибку по вашему усмотрению.
+                    Console.WriteLine("Ошибка при скачивании файла версии: " + ex.Message);
+                }
+                return string.Empty;
+            } 
         }
-        public async Task<string> DownloadVersionText(string url)
+            
+            public async Task<string> DownloadVersionText(string url)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -209,13 +225,7 @@ namespace Minty.View
             }
         }
 
-        private async Task<string> ReadFileAsync(string filePath)
-        {
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                return await reader.ReadToEndAsync();
-            }
-        }
+        
         #endregion
         //Progressbar
         #region
