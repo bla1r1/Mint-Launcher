@@ -44,14 +44,12 @@ namespace Minty.View
             string accessToken = "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"; 
             string owner = "kindawindytoday";
             string repositoryName = "Minty-Releases";
-            string verfileName = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/ver";
             var client = new GitHubClient(new ProductHeaderValue("Launcher"));
             var tokenAuth = new Credentials(accessToken);
             client.Credentials = tokenAuth;
             var releases = await client.Repository.Release.GetAll(owner, repositoryName);
             var latestRelease = releases[0];
             var asset = latestRelease.Assets.FirstOrDefault();
-            var asset2 = latestRelease.Assets.FirstOrDefault(a => a.Name == verfileName);
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
@@ -82,49 +80,88 @@ namespace Minty.View
                 }
                 else
                 {
-                    
+
                     if (!File.Exists(launcherFilePath))
                     {
                         if (asset != null)
                         {
                             string downloadUrl = asset.BrowserDownloadUrl;
-                            using (var webClient = new WebClient())
+
+                            try
                             {
-                                await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), "minty.zip");
+                                using (var webClient = new WebClient())
+                                {
+                                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                                }
+                                // Файл успешно скачан и сохранен по указанному пути
                             }
+                            catch (WebException ex)
+                            {
+                                // Обработка исключения, связанного с сетевыми проблемами
+                                MessageBox.Show("Произошла ошибка при скачивании файла: " + ex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                // Обработка других исключений
+                                MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message);
+                            }
+
                         }
                         else
                         {
                             MessageBox.Show("Asset не найден. Возможно, имя файла не совпадает.");
-                            // Обработка ситуации, когда asset равен null
                         }
                     }
                     else
                     {
                         try
                         {
-                            if (asset != null)
+                            string verfileUrl = "https://github.com/rusya222/LauncherVer/blob/main/ver.txt";
+                            string verfileContent = await DownloadVerfileContentAsync(verfileUrl);
+                            Version localVersion;
+
+                            if (Version.TryParse(verfileContent, out localVersion))
                             {
-                              
-                            }
-                            string verfileContent = await DownloadVerfileContentAsync(asset.BrowserDownloadUrl);
-                            Version latestGitHubVersion = new Version(latestRelease.TagName);
-                            int versionComparison = latestGitHubVersion.CompareTo(new Version(verfileContent));
-                            if (versionComparison < 0)
-                            {
-                                MessageBox.Show("a");
-                            }
+                                if (asset != null)
+                                {
+                                    Version latestGitHubVersion = new Version(latestRelease.TagName);
+
+                                    int versionComparison = latestGitHubVersion.CompareTo(localVersion);
+
+                                    if (versionComparison < 0)
+                                    {
+                                        MessageBox.Show("Локальная версия устарела");
+                                    }
+                                    else if (versionComparison > 0)
+                                    {
+                                        MessageBox.Show("Локальная версия новее");
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Локальная версия и версия на GitHub равны");
+                                    }
+                                }
                             else
                             {
-                                MessageBox.Show("Е");
+                                // Обработка случая, когда версию не удалось разобрать
+                                MessageBox.Show("Некорректный формат версии: " + verfileContent);
+                            }
+                            
                             }
                         }
-                        catch
+                        catch (WebException ex)
                         {
-                            MessageBox.Show("sdff");
+                            // Обработка ошибки сетевого запроса, если она возникла
+                            MessageBox.Show("Произошла ошибка при скачивании файла: " + ex.Message);
                         }
+                        catch (Exception ex)
+                        {
+                            // Обработка других исключений, если они возникли
+                            MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message);
+                        }
+
                     }
-                    
+
                 }
             }
         }
