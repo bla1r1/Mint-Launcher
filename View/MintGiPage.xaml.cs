@@ -57,7 +57,7 @@ namespace Minty.View
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
             string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
-            string verUrl = "https://github.com/rusya222/LauncherVer/raw/main/ver.txt"; 
+            string verUrl = "https://github.com/rusya222/LauncherVer/blob/main/verGI.txt"; 
             string updateFilePath = "LauncherUpdater.exe";
             string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrllauncher);
@@ -91,38 +91,45 @@ namespace Minty.View
 
                             try
                             {
+                                this.GI_button.Content = "Downloading";
                                 Directory.CreateDirectory(assetsFolderPath);
                                 Directory.CreateDirectory(mintyFolderPath);
-                                using (var webClient = new WebClient())
-                                {
-                                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
-                                }   
-                                await DownloadFile(verUrl, verFilePath);
-                                //await ExtractZipFile(zipFilePath, assetsFolderPath);
-                                //File.Delete(zipFilePath);
-                                //LaunchExecutable(launcherFilePath);
-                                //mainWindow.MinimizeToTray();
+                                    using (var webClient = new WebClient())
+                                    {
+                                        await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                                        await webClient.DownloadFileTaskAsync(new Uri(verUrl), verFilePath);
+                                    }
+                                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                                File.Delete(zipFilePath);
+                                this.GI_button.Content = "Launch";
+                                LaunchExecutable(launcherFilePath);
+                                mainWindow.MinimizeToTray();
                             }
-                            catch (WebException ex)
-                            {  
-                                MessageBox.Show("Произошла ошибка при скачивании файла: " + ex.Message);
+                            #region//catch
+                            catch (HttpRequestException ex)
+                            {
+                                MessageBox.Show($"Error downloading file: {ex.Message}");
+                            }
+                            catch (IOException ex)
+                            {
+                                MessageBox.Show($"Error saving file: {ex.Message}");
                             }
                             catch (Exception ex)
-                            {    
-                                MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message);
+                            {
+                                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
                             }
-
+                           
                         }
                         else
                         {
-                            MessageBox.Show("Asset не найден. Возможно, имя файла не совпадает.");
+                            MessageBox.Show("Minty.zip not found. The file name may not match.");
                         }
                     }
                     else
-                    {
+                    {             
                         try
                         {
-                            string VerText = File.ReadAllText(verFilePath);
+                           string  VerText = File.ReadAllText(verFilePath);
                             Version localVersion;
 
                             if (Version.TryParse(VerText, out localVersion))
@@ -132,39 +139,79 @@ namespace Minty.View
 
                                 if (Version.TryParse(githubVersionTag, out githubVersion))
                                 {
-                                    int versionComparison = githubVersion.CompareTo(localVersion);
+                                    
 
-                                    if (versionComparison < 0)
+                                    if (localVersion < githubVersion)
                                     {
-                                        MessageBox.Show("Локальная версия устарела.");
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Локальная версия и версия на GitHub равны.");
+                                        if (asset != null)
+                                        {
+                                            string downloadUrl = asset.BrowserDownloadUrl;
+
+                                            try
+                                            {
+                                                #endregion
+                                                this.GI_button.Content = "Downloading";
+                                                File.Delete(verFilePath);
+                                                File.Delete(launcherFilePath);
+                                                File.Delete(dllFilePath);
+                                                using (var webClient = new WebClient())
+                                                {
+                                                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                                                    await webClient.DownloadFileTaskAsync(new Uri(verUrl), verFilePath);
+                                                }
+                                                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                                                File.Delete(zipFilePath);
+                                                this.GI_button.Content = "Launch";
+                                                string fileContent = File.ReadAllText(verFilePath);
+                                                MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
+                                                LaunchExecutable(launcherFilePath);
+                                                mainWindow.MinimizeToTray();
+                                               
+                                            }
+                                            catch (HttpRequestException ex)
+                                            {
+                                                MessageBox.Show($"Error downloading file: {ex.Message}");
+                                            }
+                                            catch (IOException ex)
+                                            {
+                                                MessageBox.Show($"Error saving file: {ex.Message}");
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Minty.zip not found. The file name may not match.");
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show($"Некорректный формат версии на GitHub: {githubVersionTag}");
+                                    MessageBox.Show($"Incorrect version format on GitHub: {githubVersionTag}");
                                 }
                             }
                             else
                             {
-                                MessageBox.Show($"Некорректный формат версии в локальном файле: {VerText}");
+                                MessageBox.Show($"Incorrect version format in local file: {VerText}");
                             }
                         }
 
                         catch (WebException ex)
                         {
-                            // Обработка ошибки сетевого запроса, если она возникла
-                            MessageBox.Show("Произошла ошибка при скачивании файла: " + ex.Message);
+                            MessageBox.Show($"Error downloading file: {ex.Message}");
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBox.Show($"Error saving file: {ex.Message}");
                         }
                         catch (Exception ex)
                         {
-                            // Обработка других исключений, если они возникли
-                            MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message);
+                            MessageBox.Show($"An unexpected error occurred: {ex.Message}");
                         }
-
+                       
                     }
 
                 }
@@ -184,53 +231,6 @@ namespace Minty.View
         #endregion
         //Download + Extract
         #region
-        private async Task DownloadFile(string url, string destinationPath)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(destinationPath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        long totalBytes = response.Content.Headers.ContentLength ?? -1;
-                        long downloadedBytes = 0;
-                        byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
-
-                        using (Stream contentStream = await response.Content.ReadAsStreamAsync())
-                        {
-                            int bytesRead;
-                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                            {
-                                await fileStream.WriteAsync(buffer, 0, bytesRead);
-                                downloadedBytes += bytesRead;
-                                currentProgress = (int)((downloadedBytes * 100) / totalBytes);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-            finally
-            {
-                timer.Stop();
-                ProgressBar.Visibility = Visibility.Hidden;
-                currentProgress = 0;
-            }
-        }
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
             try
