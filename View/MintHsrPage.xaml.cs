@@ -20,6 +20,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Octokit;
+using Page = System.Windows.Controls.Page;
 #endregion
 namespace Minty.View
 {
@@ -38,22 +40,27 @@ namespace Minty.View
         #region
         public async void launch_Click(object sender, RoutedEventArgs e)
         {
-
+            string accessToken = "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";
+            string owner = "kindawindytoday";
+            string repositoryName = "Minty-Releases";
+            var client = new GitHubClient(new ProductHeaderValue("Launcher"));
+            var tokenAuth = new Credentials(accessToken);
+            client.Credentials = tokenAuth;
+            var releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            var latestRelease = releases[0];
+            var asset = latestRelease.Assets.FirstOrDefault();
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
             string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyHSR");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintyHSR.zip");
-            string verfilePath = System.IO.Path.Combine(assetsFolderPath, "versionSR.txt");
-            string tempFolderPath = System.IO.Path.GetTempPath();
-            string updateFilePath = System.IO.Path.Combine(tempFolderPath, "update.exe");
-            string serverFileUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/versionSR.txt";
-            string zipUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/mintySR.zip";
-            string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/update.exe";
-            string versionUrl = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
-            string versionText = await DownloadVersionText(versionUrl);
-            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
+            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
+            string verUrl = "https://github.com/rusya222/LauncherVer/blob/main/verGI.txt";
+            string updateFilePath = "LauncherUpdater.exe";
+            string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
+            string versionText = await DownloadVersionText(versionUrllauncher);
+            MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
             if (versionText != null)
             {
                 double latestVersion = .0;
@@ -68,85 +75,150 @@ namespace Minty.View
 
                 if (currentVersion < latestVersion)
                 {
-                    await DownloadFile(updateUrl, updateFilePath);
-                    MessageBox.Show($"Launcher got an update." + "\n" + "If you see this dialog every time, turn on the VPN", "Update");
                     LaunchExecutable(updateFilePath);
                     Environment.Exit(0);
                 }
                 else
                 {
-                    if (!File.Exists(verfilePath))
+
+                    if (!File.Exists(launcherFilePath))
                     {
-                        this.HSR_button.Content = "Downloading";
-                        Directory.CreateDirectory(assetsFolderPath);
-                        Directory.CreateDirectory(mintyFolderPath);
-                        await DownloadFile(zipUrl, zipFilePath);
-                        await ExtractZipFile(zipFilePath, assetsFolderPath);
-                        File.Delete(zipFilePath);
-                        this.HSR_button.Content = "Launch";
-                        LaunchExecutable(launcherFilePath);
-                        mainWindow.MinimizeToTray();
-                    }
-                    else
-                    {
-                        bool filesAreSame = await CheckIfFilesAreSameAsync(serverFileUrl, verfilePath);
-                        if (filesAreSame)
+                        if (asset != null)
                         {
-                            if (File.Exists(launcherFilePath))
+                            string downloadUrl = asset.BrowserDownloadUrl;
+
+                            try
                             {
+                                this.HSR_button.Content = "Downloading";
+                                Directory.CreateDirectory(assetsFolderPath);
+                                Directory.CreateDirectory(mintyFolderPath);
+                                using (var webClient = new WebClient())
+                                {
+                                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                                    await webClient.DownloadFileTaskAsync(new Uri(verUrl), verFilePath);
+                                }
+                                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                                File.Delete(zipFilePath);
                                 this.HSR_button.Content = "Launch";
                                 LaunchExecutable(launcherFilePath);
                                 mainWindow.MinimizeToTray();
                             }
+                            #region//catch
+                            catch (HttpRequestException ex)
+                            {
+                                MessageBox.Show($"Error downloading file: {ex.Message}");
+                            }
+                            catch (IOException ex)
+                            {
+                                MessageBox.Show($"Error saving file: {ex.Message}");
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                            }
+
                         }
                         else
                         {
-                            this.HSR_button.Content = "Downloading";
-                            Directory.CreateDirectory(assetsFolderPath);
-                            Directory.CreateDirectory(mintyFolderPath);
-                            await DownloadFile(zipUrl, zipFilePath);
-                            await ExtractZipFile(zipFilePath, assetsFolderPath);
-                            string fileContent = File.ReadAllText(verfilePath);
-                            MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
-                            this.HSR_button.Content = "Launch";
-                            mainWindow.MinimizeToTray();
+                            MessageBox.Show("Minty.zip not found. The file name may not match.");
                         }
                     }
+                    else
+                    {
+                        try
+                        {
+                            string VerText = File.ReadAllText(verFilePath);
+                            Version localVersion;
+
+                            if (Version.TryParse(VerText, out localVersion))
+                            {
+                                string githubVersionTag = latestRelease.TagName;
+                                Version githubVersion;
+
+                                if (Version.TryParse(githubVersionTag, out githubVersion))
+                                {
+
+
+                                    if (localVersion < githubVersion)
+                                    {
+                                        if (asset != null)
+                                        {
+                                            string downloadUrl = asset.BrowserDownloadUrl;
+
+                                            try
+                                            {
+                                                #endregion
+                                                this.HSR_button.Content = "Downloading";
+                                                File.Delete(verFilePath);
+                                                File.Delete(launcherFilePath);
+                                                File.Delete(dllFilePath);
+                                                using (var webClient = new WebClient())
+                                                {
+                                                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), zipFilePath);
+                                                    await webClient.DownloadFileTaskAsync(new Uri(verUrl), verFilePath);
+                                                }
+                                                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                                                File.Delete(zipFilePath);
+                                                this.HSR_button.Content = "Launch";
+                                                string fileContent = File.ReadAllText(verFilePath);
+                                                MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
+                                                LaunchExecutable(launcherFilePath);
+                                                mainWindow.MinimizeToTray();
+
+                                            }
+                                            catch (HttpRequestException ex)
+                                            {
+                                                MessageBox.Show($"Error downloading file: {ex.Message}");
+                                            }
+                                            catch (IOException ex)
+                                            {
+                                                MessageBox.Show($"Error saving file: {ex.Message}");
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Minty.zip not found. The file name may not match.");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Incorrect version format on GitHub: {githubVersionTag}");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Incorrect version format in local file: {VerText}");
+                            }
+                        }
+
+                        catch (WebException ex)
+                        {
+                            MessageBox.Show($"Error downloading file: {ex.Message}");
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBox.Show($"Error saving file: {ex.Message}");
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                        }
+
+                    }
+
                 }
             }
         }
         #endregion
         //download
         #region
-        private async Task DownloadFile(string url, string destinationPath)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-        }
+        
         #endregion
         //EXTRACT
         #region

@@ -32,7 +32,7 @@ namespace Minty.View
         public MintGiPage()
         {
             InitializeComponent();
-            Timer();
+            
             
         }
         //Metods
@@ -229,7 +229,7 @@ namespace Minty.View
             }
         }
         #endregion
-        //Download + Extract
+        //Extract
         #region
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
@@ -289,21 +289,6 @@ namespace Minty.View
         }
 
         
-        #endregion
-        //Progressbar
-        #region
-        private async Task Timer()
-        {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100);
-            timer.Tick += Timer_Tick;
-            currentProgress = 0;
-            ProgressBar.Visibility = Visibility.Hidden;
-        }
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            ProgressBar.Value = currentProgress;
-        }
         #endregion
         #endregion
     }

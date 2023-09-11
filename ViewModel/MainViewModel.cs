@@ -10,6 +10,7 @@ namespace Minty.ViewModel
         private Page mgi = new MintGiPage();
         private Page mhsr = new MintHsrPage();
         private Page ab = new AboutPage();
+        private Page s = new SettingsPage();
         private Page _CurPage = new MintGiPage();
 
 
@@ -40,6 +41,13 @@ namespace Minty.ViewModel
             get
             {
                 return new RelayCommand(() => CurPage = ab);
+            }
+        }
+        public ICommand OpenSettinsPage
+        {
+            get
+            {
+                return new RelayCommand(() => CurPage = s);
             }
         }
     }

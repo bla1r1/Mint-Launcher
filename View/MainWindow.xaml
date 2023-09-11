@@ -155,7 +155,8 @@
             <Button x:Name="launch" Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty GI" Command="{Binding OpenMintGiPage}"/>
             <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty HSR" Command="{Binding OpenMintHsrPage}"/>
             <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="About" Command="{Binding OpenAboutPage}"/>
-          </StackPanel>
+                    <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Settings" Command="{Binding OpenSettinsPage}"/>
+                </StackPanel>
     </Border>
      </Grid>
         <Grid Name="SlideMenu" Grid.Column="0" Grid.Row="1">

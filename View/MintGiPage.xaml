@@ -16,6 +16,6 @@
          <Image Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
          Stretch="Fill" Source="\L_images\Ayaka.png"/>
         <Button x:Name="GI_button" Content="Launch" HorizontalAlignment="Left" Margin="927,557,0,0" VerticalAlignment="Top" Height="111" Width="313" FontFamily="Comic Sans MS" FontSize="30" Background="#FFEDCC32" Click="launch_Click"/>
-        <ProgressBar Margin="293,588,293,82" x:Name="ProgressBar" Visibility="Hidden"/>
+        
     </Grid>
 </Page>
