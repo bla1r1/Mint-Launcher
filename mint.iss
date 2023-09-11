@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.13"
+#define MyAppVersion "1.14"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -25,7 +25,7 @@ UninstallDisplayIcon={app}\Launcher.exe
 AllowNoIcons=yes
 OutputDir=C:\Users\Blair\Desktop\Mintlauncherinstaller
 OutputBaseFilename=Minty
-SetupIconFile=bin\Debug\net7.0-windows10.0.17763.0\icon.ico
+SetupIconFile=bin\Debug\net7.0-windows10.0.17763.0\L_images\virus.ico
 Compression=lzma
 SolidCompression=yes
 DisableWelcomePage=False
@@ -43,9 +43,12 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "bin\Debug\net7.0-windows10.0.17763.0\Minty.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Debug\net7.0-windows10.0.17763.0\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Debug\net7.0-windows10.0.17763.0\Minty.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Debug\net7.0-windows10.0.17763.0\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Debug\net7.0-windows10.0.17763.0\LauncherUpdater.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Debug\net7.0-windows10.0.17763.0\LauncherUpdater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Debug\net7.0-windows10.0.17763.0\LauncherUpdater.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Debug\net7.0-windows10.0.17763.0\L_images\virus.ico"; DestDir: "{app}\L_images"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"

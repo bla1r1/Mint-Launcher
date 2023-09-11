@@ -42,8 +42,8 @@ namespace Minty.View
         {
             string accessToken = "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";
             string owner = "kindawindytoday";
-            string repositoryName = "Minty-Releases";
-            var client = new GitHubClient(new ProductHeaderValue("Launcher"));
+            string repositoryName = "Minty-SR-Releases";
+            var client = new GitHubClient(new ProductHeaderValue("LauncherSR"));
             var tokenAuth = new Credentials(accessToken);
             client.Credentials = tokenAuth;
             var releases = await client.Repository.Release.GetAll(owner, repositoryName);
@@ -51,12 +51,12 @@ namespace Minty.View
             var asset = latestRelease.Assets.FirstOrDefault();
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
-            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyHSR");
+            string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintySR");
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
-            string verUrl = "https://github.com/rusya222/LauncherVer/blob/main/verGI.txt";
+            string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintySR.zip");
+            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "verSR.txt");
+            string verUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/VerSR.txt";
             string updateFilePath = "LauncherUpdater.exe";
             string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrllauncher);
@@ -103,7 +103,7 @@ namespace Minty.View
                                 LaunchExecutable(launcherFilePath);
                                 mainWindow.MinimizeToTray();
                             }
-                            #region//catch
+                          
                             catch (HttpRequestException ex)
                             {
                                 MessageBox.Show($"Error downloading file: {ex.Message}");
@@ -147,7 +147,7 @@ namespace Minty.View
 
                                             try
                                             {
-                                                #endregion
+                                                
                                                 this.HSR_button.Content = "Downloading";
                                                 File.Delete(verFilePath);
                                                 File.Delete(launcherFilePath);
@@ -184,6 +184,11 @@ namespace Minty.View
                                         {
                                             MessageBox.Show("Minty.zip not found. The file name may not match.");
                                         }
+                                    }
+                                    else
+                                    {
+                                        LaunchExecutable(launcherFilePath);
+                                        mainWindow.MinimizeToTray();
                                     }
                                 }
                                 else

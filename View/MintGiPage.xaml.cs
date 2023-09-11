@@ -56,8 +56,8 @@ namespace Minty.View
             string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
             string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.zip");
-            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
-            string verUrl = "https://github.com/rusya222/LauncherVer/blob/main/verGI.txt"; 
+            string verFilePath = System.IO.Path.Combine(assetsFolderPath, "verGI.txt");
+            string verUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/verGI.txt"; 
             string updateFilePath = "LauncherUpdater.exe";
             string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
             string versionText = await DownloadVersionText(versionUrllauncher);
@@ -91,6 +91,7 @@ namespace Minty.View
 
                             try
                             {
+                               
                                 this.GI_button.Content = "Downloading";
                                 Directory.CreateDirectory(assetsFolderPath);
                                 Directory.CreateDirectory(mintyFolderPath);
@@ -105,7 +106,7 @@ namespace Minty.View
                                 LaunchExecutable(launcherFilePath);
                                 mainWindow.MinimizeToTray();
                             }
-                            #region//catch
+                         
                             catch (HttpRequestException ex)
                             {
                                 MessageBox.Show($"Error downloading file: {ex.Message}");
@@ -126,30 +127,28 @@ namespace Minty.View
                         }
                     }
                     else
-                    {             
-                        try
-                        {
-                           string  VerText = File.ReadAllText(verFilePath);
+                    {
+                       
+                        string VerText = File.ReadAllText(verFilePath);
                             Version localVersion;
-
                             if (Version.TryParse(VerText, out localVersion))
                             {
-                                string githubVersionTag = latestRelease.TagName;
+                           
+                            string githubVersionTag = latestRelease.TagName;
                                 Version githubVersion;
-
                                 if (Version.TryParse(githubVersionTag, out githubVersion))
                                 {
-                                    
-
-                                    if (localVersion < githubVersion)
+                                
+                                if (localVersion < githubVersion)
                                     {
                                         if (asset != null)
                                         {
-                                            string downloadUrl = asset.BrowserDownloadUrl;
+                                        
+                                        string downloadUrl = asset.BrowserDownloadUrl;
 
                                             try
                                             {
-                                                #endregion
+                                                
                                                 this.GI_button.Content = "Downloading";
                                                 File.Delete(verFilePath);
                                                 File.Delete(launcherFilePath);
@@ -166,7 +165,7 @@ namespace Minty.View
                                                 MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
                                                 LaunchExecutable(launcherFilePath);
                                                 mainWindow.MinimizeToTray();
-                                               
+
                                             }
                                             catch (HttpRequestException ex)
                                             {
@@ -180,14 +179,19 @@ namespace Minty.View
                                             {
                                                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
                                             }
-
                                         }
+
                                         else
                                         {
                                             MessageBox.Show("Minty.zip not found. The file name may not match.");
                                         }
                                     }
+                                else
+                                {
+                                    LaunchExecutable(launcherFilePath);
+                                    mainWindow.MinimizeToTray();
                                 }
+                            }
                                 else
                                 {
                                     MessageBox.Show($"Incorrect version format on GitHub: {githubVersionTag}");
@@ -196,22 +200,7 @@ namespace Minty.View
                             else
                             {
                                 MessageBox.Show($"Incorrect version format in local file: {VerText}");
-                            }
-                        }
-
-                        catch (WebException ex)
-                        {
-                            MessageBox.Show($"Error downloading file: {ex.Message}");
-                        }
-                        catch (IOException ex)
-                        {
-                            MessageBox.Show($"Error saving file: {ex.Message}");
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-                        }
-                       
+                            } 
                     }
 
                 }

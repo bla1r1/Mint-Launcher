@@ -44,7 +44,7 @@ namespace Minty.View
                     string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     string mintyFolderPath = System.IO.Path.Combine(appDataFolder, "minty");
                     string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyGI");
-                    string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
+                    string verFilePath = System.IO.Path.Combine(assetsFolderPath, "verGI.txt");
                     string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
                     string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
                     File.Delete(verFilePath);
@@ -76,7 +76,7 @@ namespace Minty.View
                     string assetsFolderPath = System.IO.Path.Combine(mintyFolderPath, "MintyHSR");
                     string launcherFilePath = System.IO.Path.Combine(assetsFolderPath, "Launcher.exe");
                     string dllFilePath = System.IO.Path.Combine(assetsFolderPath, "minty.dll");
-                    string verFilePath = System.IO.Path.Combine(assetsFolderPath, "ver.txt");
+                    string verFilePath = System.IO.Path.Combine(assetsFolderPath, "verSR.txt");
                     File.Delete(verFilePath);
                     File.Delete(launcherFilePath);
                     File.Delete(dllFilePath);
