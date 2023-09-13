@@ -1,11 +1,14 @@
 ﻿//using
 #region
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +28,6 @@ using Page = System.Windows.Controls.Page;
 #endregion
 namespace Minty.View
 {
-    /// <summary>
-    /// Логика взаимодействия для MintHsrPage.xaml
-    /// </summary>
     public partial class MintHsrPage : Page
     {
         public MintHsrPage()
@@ -103,7 +103,7 @@ namespace Minty.View
                                 LaunchExecutable(launcherFilePath);
                                 mainWindow.MinimizeToTray();
                             }
-                          
+
                             catch (HttpRequestException ex)
                             {
                                 MessageBox.Show($"Error downloading file: {ex.Message}");
@@ -147,7 +147,7 @@ namespace Minty.View
 
                                             try
                                             {
-                                                
+
                                                 this.HSR_button.Content = "Downloading";
                                                 File.Delete(verFilePath);
                                                 File.Delete(launcherFilePath);
@@ -223,7 +223,7 @@ namespace Minty.View
         #endregion
         //download
         #region
-        
+
         #endregion
         //EXTRACT
         #region
@@ -295,7 +295,7 @@ namespace Minty.View
             }
         }
 
-            private async Task<string> ReadFileAsync(string filePath)
+        private async Task<string> ReadFileAsync(string filePath)
         {
             using (StreamReader reader = new StreamReader(filePath))
             {
