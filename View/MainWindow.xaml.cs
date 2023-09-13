@@ -1,28 +1,14 @@
 ﻿//using
 #region
+using DiscordRPC;
+using Hardcodet.Wpf.TaskbarNotification;
 using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Input;
-using System.Net;
-using System.Net.Http;
-using System.IO;
-using System.Threading.Tasks;
-using System.IO.Compression;
-using Hardcodet.Wpf.TaskbarNotification;
-using System.Windows.Forms;
-using DiscordRPC;
-using Button = DiscordRPC.Button;
-using static System.Windows.Forms.AxHost;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using System.Security.Policy;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Windows.Interop;
-using System.Threading;
-using System.Linq;
-using FluentWpfChromes;
+using System.Windows.Input;
+using Button = DiscordRPC.Button;
+
 #endregion
 
 namespace Minty

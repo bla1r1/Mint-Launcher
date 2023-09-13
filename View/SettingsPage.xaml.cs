@@ -1,41 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//usings
+#region
+using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MessageBox = System.Windows.MessageBox;
-
+#endregion
 namespace Minty.View
 {
-    /// <summary>
-    /// Логика взаимодействия для SettingsPage.xaml
-    /// </summary>
     public partial class SettingsPage : Page
     {
-        
         public SettingsPage()
         {
             InitializeComponent();
-            
         }
+        //Metods
+        #region
+        //DeleteGI
+        #region
         private void DeleteGI(object sender, RoutedEventArgs e)
         {
             try
             {
-               
+
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
                 DialogResult result = System.Windows.Forms.MessageBox.Show("Are you sure ?", "Delete MintyGI", MessageBoxButtons.YesNo);
 
@@ -53,15 +43,17 @@ namespace Minty.View
                 }
                 else if (result == DialogResult.No)
                 {
-                    
+
                 }
             }
             catch (Exception ex)
             {
-                // Обработка ошибок чтения файла, например, вывод сообщения об ошибке или логирование.
                 MessageBox.Show("Произошла ошибка при чтении файла: " + ex.Message);
             }
         }
+        #endregion
+        //DeleteSR
+        #region
         private void DeleteSR(object sender, RoutedEventArgs e)
         {
             try
@@ -88,11 +80,11 @@ namespace Minty.View
             }
             catch (Exception ex)
             {
-                // Обработка ошибок чтения файла, например, вывод сообщения об ошибке или логирование.
                 MessageBox.Show("Произошла ошибка при чтении файла: " + ex.Message);
             }
         }
-           
-        }
+        #endregion
+        #endregion
     }
+}
 

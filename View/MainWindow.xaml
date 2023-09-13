@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minty"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        xmlns:vm="clr-namespace:Minty.ViewModel" xmlns:f="clr-namespace:FluentWpfChromes;assembly=FluentWpfChromes"
+        xmlns:vm="clr-namespace:Minty.ViewModel" 
         mc:Ignorable="d"
         Title="Minty" Height="720" Width="1280"
        WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize"
@@ -13,9 +13,6 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <f:AeroGlassChrome.AeroGlassChrome>
-        <f:AeroGlassChrome/>
-    </f:AeroGlassChrome.AeroGlassChrome>
     <Window.Resources>
         <tb:TaskbarIcon x:Key="MyTaskbarIcon" IconSource="/L_images/virus.ico">
             <tb:TaskbarIcon.ContextMenu>
@@ -151,7 +148,7 @@
             <Grid Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="2">
             <Label Content="" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="1280" MouseDown="Label_MouseDown"/>
             <Border x:Name="TopMenu1" BorderThickness="0,0,0,1" BorderBrush="#FF303031">
-          <StackPanel Orientation="Horizontal" f:AeroGlassChrome.IsHitTestVisibleInChrome="True">
+          <StackPanel Orientation="Horizontal">
             <Button x:Name="launch" Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty GI" Command="{Binding OpenMintGiPage}"/>
             <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="Minty HSR" Command="{Binding OpenMintHsrPage}"/>
             <Button Template="{StaticResource ResourceKey=TopMenuButtons}" Content="About" Command="{Binding OpenAboutPage}"/>

@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using Minty.View;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Minty.View;
 namespace Minty.ViewModel
 {
     internal class MainViewModel : ViewModelBase
