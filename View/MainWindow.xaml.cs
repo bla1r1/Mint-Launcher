@@ -13,13 +13,8 @@ using Button = DiscordRPC.Button;
 
 namespace Minty
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private TaskbarIcon taskbarIcon;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -30,7 +25,7 @@ namespace Minty
         #region
         //taskbar
         #region
-
+        private TaskbarIcon taskbarIcon;
         private void InitializeTrayIcon()
         {
             taskbarIcon = new TaskbarIcon();
@@ -98,52 +93,6 @@ namespace Minty
         public void MinimizeToTray()
         {
             this.Hide();
-        }
-        #endregion
-        //download
-        #region
-        public async Task DownloadFile(string url, string destinationPath)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                System.Windows.MessageBox.Show($"Error downloading file: {ex.Message}");
-            }
-            catch (IOException ex)
-            {
-                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-        }
-        #endregion
-        //launch
-        #region
-        public void LaunchExecutable(string exePath)
-        {
-            try
-            {
-                Process.Start(exePath);
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"Error launching executable: {ex.Message}");
-            }
         }
         #endregion
         //RPC
@@ -269,10 +218,6 @@ namespace Minty
 
 
         }
-
-        #endregion
-        //mutex
-        #region
 
         #endregion
         #endregion

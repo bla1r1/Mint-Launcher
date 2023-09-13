@@ -55,7 +55,7 @@ namespace LauncherUpdater
             string mintFilePath = "Minty.exe";
             string updateUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/Update.zip";
 
-            cl.Visibility = Visibility.Hidden; 
+            cl.Visibility = Visibility.Hidden;
             up.Visibility = Visibility.Hidden;
             ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.Value = 0;
