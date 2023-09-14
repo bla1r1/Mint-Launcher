@@ -9,19 +9,14 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.IO.Compression;
 using static Minty.MainWindow;
 using System.Windows.Media.Effects;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Octokit;
-using System.Windows;
 using Page = System.Windows.Controls.Page;
 using System.Collections.Generic;
-using System.Linq;
 #endregion
 
 namespace Minty.View

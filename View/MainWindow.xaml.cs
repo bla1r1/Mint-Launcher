@@ -4,11 +4,15 @@ using DiscordRPC;
 using Hardcodet.Wpf.TaskbarNotification;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Button = DiscordRPC.Button;
-
+using System.Threading.Tasks;
+using System.IO.Compression;
 #endregion
 
 namespace Minty
@@ -18,7 +22,7 @@ namespace Minty
         public MainWindow()
         {
             InitializeComponent();
-            InitializeTrayIcon();
+            InitializeTrayIconAsync();
             DiscordRPC();
         }
         //metods
@@ -26,31 +30,41 @@ namespace Minty
         //taskbar
         #region
         private TaskbarIcon taskbarIcon;
-        private void InitializeTrayIcon()
+
+        private void InitializeTrayIconAsync()
         {
-            taskbarIcon = new TaskbarIcon();
-            taskbarIcon.Icon = new System.Drawing.Icon("L_images/virus.ico");
-            taskbarIcon.ToolTipText = "Minty";
 
-            ContextMenu contextMenu = new ContextMenu();
+            string IcoFilePath = "L_images/virus.ico";
+            if (!File.Exists(IcoFilePath))
+            {
+                Ico();
+            }
+            else
+            {
+                taskbarIcon = new TaskbarIcon();
+                taskbarIcon.Icon = new System.Drawing.Icon("L_images/virus.ico");
+                taskbarIcon.ToolTipText = "Minty";
 
-            MenuItem openMenuItem = new MenuItem() { Header = "Open" };
-            openMenuItem.Click += OpenMenuItem_Click;
-            contextMenu.Items.Add(openMenuItem);
+                ContextMenu contextMenu = new ContextMenu();
 
-            MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
-            exitMenuItem.Click += ExitMenuItem_Click;
-            contextMenu.Items.Add(exitMenuItem);
+                MenuItem openMenuItem = new MenuItem() { Header = "Open" };
+                openMenuItem.Click += OpenMenuItem_Click;
+                contextMenu.Items.Add(openMenuItem);
 
-            MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
-            minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
-            contextMenu.Items.Add(minimizeToTrayMenuItem);
+                MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
+                exitMenuItem.Click += ExitMenuItem_Click;
+                contextMenu.Items.Add(exitMenuItem);
 
-            taskbarIcon.ContextMenu = contextMenu;
+                MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
+                minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
+                contextMenu.Items.Add(minimizeToTrayMenuItem);
 
-            taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
+                taskbarIcon.ContextMenu = contextMenu;
 
-            taskbarIcon.Visibility = Visibility.Visible;
+                taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
+
+                taskbarIcon.Visibility = Visibility.Visible;
+            }
         }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)
@@ -94,6 +108,35 @@ namespace Minty
         {
             this.Hide();
         }
+        private async Task Ico()
+        {
+            string IcoFilePath = "L_images/virus.ico";
+            string FilePath = "L_images";
+            string downloadUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/virus.ico";
+
+                Directory.CreateDirectory(FilePath);
+                try
+                {
+                    using (var webClient = new WebClient())
+                    {
+                        await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), IcoFilePath);
+                    }
+                }
+
+                catch (HttpRequestException ex)
+                {
+                    MessageBox.Show($"Error downloading file: {ex.Message}");
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show($"Error saving file: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                }
+                Application.Current.Shutdown();
+            }
         #endregion
         //RPC
         #region
