@@ -137,29 +137,29 @@ namespace Minty
             string FilePath = "L_images";
             string downloadUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/virus.ico";
 
-                Directory.CreateDirectory(FilePath);
-                try
+            Directory.CreateDirectory(FilePath);
+            try
+            {
+                using (var webClient = new WebClient())
                 {
-                    using (var webClient = new WebClient())
-                    {
-                        await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), IcoFilePath);
-                    }
+                    await webClient.DownloadFileTaskAsync(new Uri(downloadUrl), IcoFilePath);
                 }
-
-                catch (HttpRequestException ex)
-                {
-                    MessageBox.Show($"Error downloading file: {ex.Message}");
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show($"Error saving file: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-                }
-                Application.Current.Shutdown();
             }
+
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error downloading file: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Error saving file: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+            }
+            Application.Current.Shutdown();
+        }
         #endregion
         //RPC
         #region
