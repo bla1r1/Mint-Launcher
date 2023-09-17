@@ -19,75 +19,44 @@ namespace Minty
 {
     public partial class MainWindow : Window
     {
+        private TaskbarIcon taskbarIcon;
         public MainWindow()
         {
             InitializeComponent();
-            InitializeTrayIconAsync();
+            InitializeTrayIcon();
             DiscordRPC();
         }
         //metods
         #region
         //taskbar
         #region
-        private TaskbarIcon taskbarIcon;
 
-        private async void InitializeTrayIconAsync()
+
+        private void InitializeTrayIcon()
         {
+            taskbarIcon = new TaskbarIcon();
+            taskbarIcon.Icon = new System.Drawing.Icon("L_images/virus.ico");
+            taskbarIcon.ToolTipText = "Minty";
 
-            string IcoFilePath = "L_images/virus.ico";
-            if (!File.Exists(IcoFilePath))
-            {
-                await Ico();
-                taskbarIcon = new TaskbarIcon();
-                taskbarIcon.Icon = new System.Drawing.Icon("L_images/virus.ico");
-                taskbarIcon.ToolTipText = "Minty";
+            ContextMenu contextMenu = new ContextMenu();
 
-                ContextMenu contextMenu = new ContextMenu();
+            MenuItem openMenuItem = new MenuItem() { Header = "Open" };
+            openMenuItem.Click += OpenMenuItem_Click;
+            contextMenu.Items.Add(openMenuItem);
 
-                MenuItem openMenuItem = new MenuItem() { Header = "Open" };
-                openMenuItem.Click += OpenMenuItem_Click;
-                contextMenu.Items.Add(openMenuItem);
+            MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
+            exitMenuItem.Click += ExitMenuItem_Click;
+            contextMenu.Items.Add(exitMenuItem);
 
-                MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
-                exitMenuItem.Click += ExitMenuItem_Click;
-                contextMenu.Items.Add(exitMenuItem);
+            MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
+            minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
+            contextMenu.Items.Add(minimizeToTrayMenuItem);
 
-                MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
-                minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
-                contextMenu.Items.Add(minimizeToTrayMenuItem);
+            taskbarIcon.ContextMenu = contextMenu;
 
-                taskbarIcon.ContextMenu = contextMenu;
+            taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
 
-                taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
-
-                taskbarIcon.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                taskbarIcon = new TaskbarIcon();
-                taskbarIcon.Icon = new System.Drawing.Icon("L_images/virus.ico");
-                taskbarIcon.ToolTipText = "Minty";
-
-                ContextMenu contextMenu = new ContextMenu();
-
-                MenuItem openMenuItem = new MenuItem() { Header = "Open" };
-                openMenuItem.Click += OpenMenuItem_Click;
-                contextMenu.Items.Add(openMenuItem);
-
-                MenuItem exitMenuItem = new MenuItem() { Header = "Exit" };
-                exitMenuItem.Click += ExitMenuItem_Click;
-                contextMenu.Items.Add(exitMenuItem);
-
-                MenuItem minimizeToTrayMenuItem = new MenuItem() { Header = "Minimize to Tray" };
-                minimizeToTrayMenuItem.Click += MinimizeToTrayMenuItem_Click;
-                contextMenu.Items.Add(minimizeToTrayMenuItem);
-
-                taskbarIcon.ContextMenu = contextMenu;
-
-                taskbarIcon.TrayLeftMouseDown += TaskbarIcon_LeftMouseDown;
-
-                taskbarIcon.Visibility = Visibility.Visible;
-            }
+            taskbarIcon.Visibility = Visibility.Visible;
         }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)

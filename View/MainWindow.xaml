@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Minty"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:local="clr-namespace:Minty" 
         xmlns:vm="clr-namespace:Minty.ViewModel" 
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         Title="Minty" Height="720" Width="1280"
        WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize"
@@ -27,114 +27,7 @@
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
-        <ControlTemplate x:Key="TopMenuButtons" TargetType="Button">
-            <Grid Name="Btn" Height="40" Margin="20,0,0,0">
-                <Border>
-                    <Grid>
-                        <Label Content="{TemplateBinding Content}" Background="Transparent" FontSize="23" VerticalAlignment="Center">
-                            <Label.Style>
-                                <Style TargetType="Label">
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=Btn}"
-                                                     Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}},Path=IsPressed}" Value="True">
-                                            <Setter Property="Foreground" Value="#FF9D9999"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=Btn}"
-                                                     Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}},Path=IsFocused}" Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <Label Content="{TemplateBinding Content}"
-                           Background="Transparent" Margin="-3,0,0,0" VerticalAlignment="Center" FontSize="23" FontWeight="Bold">
-                            <Label.Style>
-                                <Style TargetType="Label">
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}},Path=IsFocused}" Value="True">
-                                            <DataTrigger.Setters>
-                                                <Setter Property="Effect">
-                                                    <Setter.Value>
-                                                        <BlurEffect Radius="25"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger.Setters>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                    </Grid>
-
-                </Border>
-            </Grid>
-        </ControlTemplate>
-        <ControlTemplate x:Key="Slidebtn" TargetType="Button">
-            <Grid x:Name="Btn" Height="100" >
-
-                <Border>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{DynamicResource ResourceKey=png}"
-                               Height="70" Width="70" Margin="15,0,0,0" Stretch="Fill" />
-                        <Label Content="{TemplateBinding Content}" Background="Transparent" FontSize="23" VerticalAlignment="Center">
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Foreground" Value="#FF9D9999"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Btn}"
-                                                     Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                            <Setter Property="Foreground" Value="#FF9D9999"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Btn}"
-                                                     Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <Label Content="{TemplateBinding Content}"
-                           Background="Transparent" Margin="-3,0,0,0" VerticalAlignment="Center" FontSize="23" FontWeight="Bold">
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                            <Setter Property="Effect">
-                                                <Setter.Value>
-                                                    <BlurEffect Radius="25"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </ControlTemplate>
     </Window.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
