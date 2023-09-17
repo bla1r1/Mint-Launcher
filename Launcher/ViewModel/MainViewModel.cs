@@ -27,7 +27,6 @@ namespace Minty.ViewModel
                 return new RelayCommand(() => CurPage = mgi);
             }
         }
-
         public ICommand OpenMintHsrPage
         {
             get
