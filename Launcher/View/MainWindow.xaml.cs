@@ -24,14 +24,71 @@ namespace Minty
         {
             InitializeComponent();
             InitializeTrayIcon();
+            VerCheckLauncher();
             DiscordRPC();
         }
         //metods
         #region
+        //VERCHECK
+        #region
+        private async void VerCheckLauncher()
+            {
+                string updateFilePath = "LauncherUpdater.exe";
+                string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
+                string versionText = await DownloadVersionText(versionUrllauncher);
+
+
+                if (versionText != null)
+                {
+                    double latestVersion = .0;
+
+                    if (!Double.TryParse(versionText, out latestVersion))
+                    {
+                        MessageBox.Show("Unable to parse: " + versionText);
+                        return;
+                    }
+
+                    double currentVersion = 1.15;
+
+                    if (currentVersion < latestVersion)
+                    {
+                        LaunchExecutable(updateFilePath);
+                        Environment.Exit(0);
+                    }
+
+                }
+            }
+            public async Task<string> DownloadVersionText(string url)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        System.Windows.MessageBox.Show("Unable to connect to the web server.");
+                        return null;
+                    }
+
+                    string versionText = await response.Content.ReadAsStringAsync();
+                    return versionText;
+                }
+            }
+            private void LaunchExecutable(string exePath)
+            {
+                try
+                {
+                    Process.Start(exePath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error launching executable: {ex.Message}");
+                }
+            }
+        #endregion
         //taskbar
         #region
-
-
         private void InitializeTrayIcon()
         {
             taskbarIcon = new TaskbarIcon();
@@ -130,9 +187,9 @@ namespace Minty
             Application.Current.Shutdown();
         }
         #endregion
-        //RPC
+        //Rcp
         #region
-        private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+        private static readonly DiscordRpcClient client = new DiscordRpcClient("1155073793224609843");
 
         public static void InitRPC()
         {
@@ -144,7 +201,6 @@ namespace Minty
 
             client.Initialize();
         }
-
         public static void UpdateRPC()
         {
             var presence = new RichPresence()
@@ -154,9 +210,9 @@ namespace Minty
 
                 Assets = new Assets()
                 {
-                    LargeImageKey = "idol",
-                    SmallImageKey = "gensh",
-                    SmallImageText = "Genshin Impact"
+                    LargeImageKey = "virus",
+                    SmallImageKey = "",
+                    SmallImageText = "Minty Launcher"
                 },
                 Buttons = new Button[]
                 {
@@ -171,13 +227,18 @@ namespace Minty
             client.Invoke();
         }
 
+
+
         public static void DiscordRPC()
         {
-            InitRPC();
+
+            if (!client.IsInitialized)
+            {
+                InitRPC();
+            }
+
             UpdateRPC();
         }
-
-
         #endregion
         //dragmove
         #region
