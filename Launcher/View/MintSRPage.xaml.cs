@@ -1,6 +1,5 @@
 ﻿//using
 #region
-using DiscordRPC;
 using Octokit;
 using System;
 using System.Diagnostics;
@@ -44,7 +43,29 @@ namespace Minty.View
             string zipFilePath = System.IO.Path.Combine(assetsFolderPath, "mintySR.zip");
             string verFilePath = System.IO.Path.Combine(assetsFolderPath, "verSR.txt");
             string verUrl = "https://github.com/rusya222/LauncherVer/releases/download/1.0/VerSR.txt";
+            string updateFilePath = "LauncherUpdater.exe";
+            string versionUrllauncher = "https://raw.githubusercontent.com/rusya222/LauncherVer/main/LaunchVersion";
+            string versionText = await DownloadVersionText(versionUrllauncher);
+            MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
+            if (versionText != null)
+            {
+                double latestVersion = .0;
 
+                if (!Double.TryParse(versionText, out latestVersion))
+                {
+                    MessageBox.Show("Unable to parse: " + versionText);
+                    return;
+                }
+
+                double currentVersion = 1.14;
+
+                if (currentVersion < latestVersion)
+                {
+                    LaunchExecutable(updateFilePath);
+                    Environment.Exit(0);
+                }
+                else
+                {
 
                     if (!File.Exists(launcherFilePath))
                     {
@@ -66,6 +87,7 @@ namespace Minty.View
                                 File.Delete(zipFilePath);
                                 this.HSR_button.Content = "Launch";
                                 LaunchExecutable(launcherFilePath);
+                                mainWindow.MinimizeToTray();
                             }
 
                             catch (HttpRequestException ex)
@@ -127,6 +149,7 @@ namespace Minty.View
                                                 string fileContent = File.ReadAllText(verFilePath);
                                                 MessageBox.Show("Minty updated to version: " + fileContent, "Updated");
                                                 LaunchExecutable(launcherFilePath);
+                                                mainWindow.MinimizeToTray();
 
                                             }
                                             catch (HttpRequestException ex)
@@ -151,6 +174,7 @@ namespace Minty.View
                                     else
                                     {
                                         LaunchExecutable(launcherFilePath);
+                                        mainWindow.MinimizeToTray();
                                     }
                                 }
                                 else
@@ -179,74 +203,12 @@ namespace Minty.View
 
                     }
 
-        }
-        private void LaunchExecutable(string exePath)
-        {
-            MainWindow mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
-            try
-            {
-                Process.Start(exePath);
-                DiscordRPC();
-                mainWindow.MinimizeToTray();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error launching executable: {ex.Message}");
+                }
             }
         }
         #endregion
-        //RPC
+        //download
         #region
-        private static readonly DiscordRpcClient client = new DiscordRpcClient("1155013172382662677");
-
-        public static void InitRPC()
-        {
-            client.OnReady += (sender, e) => { };
-
-            client.OnPresenceUpdate += (sender, e) => { };
-
-            client.OnError += (sender, e) => { };
-
-            client.Initialize();
-        }
-
-        public static void UpdateRPC()
-        {
-            var presence = new RichPresence()
-            {
-                State = "Minty",
-                Details = "Hacking MHY <333",
-
-                Assets = new Assets()
-                {
-                    LargeImageKey = "virus",
-                    SmallImageKey = "starrail-logo",
-                    SmallImageText = "Genshin Impact"
-                },
-                Buttons = new Button[]
-                {
-                    new Button()
-                    {
-                        Label = "Join",
-                        Url = "https://discord.gg/kindawindytoday"
-                    }
-                }
-            };
-            client.SetPresence(presence);
-            client.Invoke();
-        }
-
-        public static void DiscordRPC()
-        {
-
-            if (!client.IsInitialized)
-            {
-                InitRPC();
-            }
-
-            UpdateRPC();
-        }
-
 
         #endregion
         //EXTRACT
@@ -264,6 +226,66 @@ namespace Minty.View
             catch (Exception ex)
             {
                 MessageBox.Show("Error while extracting the archive: " + ex.Message);
+            }
+        }
+        #endregion
+        //launch
+        #region
+        private void LaunchExecutable(string exePath)
+        {
+            try
+            {
+                Process.Start(exePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error launching executable: {ex.Message}");
+            }
+        }
+        #endregion
+        //checkver
+        #region
+        private async Task<bool> CheckIfFilesAreSameAsync(string serverFileUrl, string localFilePath)
+        {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    string serverFileContent = await client.DownloadStringTaskAsync(serverFileUrl);
+                    string localFileContent = await ReadFileAsync(localFilePath);
+
+                    return serverFileContent == localFileContent;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error checking files: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<string> DownloadVersionText(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    System.Windows.MessageBox.Show("Unable to connect to the web server.");
+                    return null;
+                }
+
+                string versionText = await response.Content.ReadAsStringAsync();
+                return versionText;
+            }
+        }
+
+        private async Task<string> ReadFileAsync(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return await reader.ReadToEndAsync();
             }
         }
         #endregion
