@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="Launcher.Views.MintySRPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="ContentArea">
+        <Grid>
+            <Grid.Background>
+                <ImageBrush  ImageSource="/Assets/BannerSR.png"/>
+            </Grid.Background>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Height="100" Width="300" 
+            Background="#FFEDCC32" Foreground="Black" FontFamily="Comic Sans MS" FontSize="30" Content="Launch"
+            x:Name="GI_button" Click="Launch"/>
+        </Grid>
+    </Grid>
+</Page>

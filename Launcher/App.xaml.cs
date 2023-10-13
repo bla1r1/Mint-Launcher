@@ -1,67 +1,94 @@
-﻿using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Threading;
-using System.Windows;
-
-namespace Minty
+﻿namespace Launcher;
+// To learn more about WinUI 3, see https://docs.microsoft.com/windows/apps/winui/winui3/.
+public partial class App : Application
 {
-    public partial class App : Application
+    // The .NET Generic Host provides dependency injection, configuration, logging, and other services.
+    // https://docs.microsoft.com/dotnet/core/extensions/generic-host
+    // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
+    // https://docs.microsoft.com/dotnet/core/extensions/configuration
+    // https://docs.microsoft.com/dotnet/core/extensions/logging
+    public IHost Host
     {
-        private Mutex _mutex = null;
-        private const string PipeName = "MintyPipe";
+        get;
+    }
 
-        protected override void OnStartup(StartupEventArgs e)
+    public static T GetService<T>()
+        where T : class
+    {
+        if ((App.Current as App)!.Host.Services.GetService(typeof(T)) is not T service)
         {
-            const string appName = "Minty";
-            bool createdNew;
-
-            _mutex = new Mutex(true, appName, out createdNew);
-
-            if (!createdNew)
-            {
-                // Notify the first instance to activate itself.
-                ActivateFirstInstance();
-
-                // Exit the current instance.
-                Environment.Exit(0);
-            }
-
-            base.OnStartup(e);
+            throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        return service;
+    }
+
+    public static WindowEx MainWindow { get; } = new MainWindow();
+
+    public static UIElement? AppTitlebar { get; set; }
+
+    public App()
+    {
+        InitializeComponent();
+
+        Host = Microsoft.Extensions.Hosting.Host.
+        CreateDefaultBuilder().
+        UseContentRoot(AppContext.BaseDirectory).
+        ConfigureServices((context, services) =>
         {
-            if (_mutex != null)
-            {
-                _mutex.ReleaseMutex();
-            }
+            // Default Activation Handler
+            services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
 
-            base.OnExit(e);
-        }
+            // Other Activation Handlers
+            services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
 
-        private void ActivateFirstInstance()
-        {
-            try
-            {
-                using (var pipeClient = new NamedPipeClientStream(".", PipeName, PipeDirection.Out))
-                {
-                    pipeClient.Connect(1000); // Timeout in milliseconds
+            // Services
+            services.AddSingleton<IAppNotificationService, AppNotificationService>();
+            services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
+            services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
+            services.AddTransient<INavigationViewService, NavigationViewService>();
 
-                    using (var writer = new StreamWriter(pipeClient))
-                    {
-                        writer.WriteLine("Activate");
-                    }
-                }
-            }
-            catch (TimeoutException)
-            {
-                // Handle the case where the first instance doesn't respond in time.
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions as needed.
-            }
-        }
+            services.AddSingleton<IActivationService, ActivationService>();
+            services.AddSingleton<IPageService, PageService>();
+            services.AddSingleton<INavigationService, NavigationService>();
+
+            // Core Services
+            services.AddSingleton<IFileService, FileService>();
+
+            // Views and ViewModels
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<SettingsPage>();
+            services.AddTransient<AboutViewModel>();
+            services.AddTransient<AboutPage>();
+            services.AddTransient<MintySRViewModel>();
+            services.AddTransient<MintySRPage>();
+            services.AddTransient<MintyGIViewModel>();
+            services.AddTransient<MintyGIPage>();
+            services.AddTransient<ShellPage>();
+            services.AddTransient<ShellViewModel>();
+
+            // Configuration
+            services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
+        }).
+        Build();
+
+        App.GetService<IAppNotificationService>().Initialize();
+
+        UnhandledException += App_UnhandledException;
+    }
+
+    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        // TODO: Log and handle exceptions as appropriate.
+        // https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
+    }
+
+    protected async override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        base.OnLaunched(args);
+
+        App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
+
+        await App.GetService<IActivationService>().ActivateAsync(args);
     }
 }

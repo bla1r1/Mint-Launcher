@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="Launcher.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:Launcher.Helpers"
+    xmlns:behaviors="using:Launcher.Behaviors"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    Loaded="OnLoaded">
+
+    <Grid>
+        <Grid x:Name="AppTitleBar"
+      Grid.Column="1" 
+      Canvas.ZIndex="1"
+      Height="{Binding ElementName=NavigationViewControl, Path=CompactPaneLength}"
+      VerticalAlignment="Top">
+            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,48,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 H 10" IsEnabled="true" Click="Minimize"/>
+            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,0,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 L 1 -1 M 1 0 L 0 -1" IsEnabled="true" Click="Close"/>
+        </Grid>
+        <NavigationView
+            x:Name="NavigationViewControl"
+            Canvas.ZIndex="0"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+            IsSettingsVisible="True"
+            ExpandedModeThresholdWidth="1280"
+            DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
+            Header="">
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Uid="Shell_MintyGI" helpers:NavigationHelper.NavigateTo="Launcher.ViewModels.MintyGIViewModel">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Uid="Shell_MintySR" helpers:NavigationHelper.NavigateTo="Launcher.ViewModels.MintySRViewModel">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Uid="Shell_About" helpers:NavigationHelper.NavigateTo="Launcher.ViewModels.AboutViewModel">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <Frame x:Name="NavigationFrame" />
+
+
+        </NavigationView>
+    </Grid>
+</Page>

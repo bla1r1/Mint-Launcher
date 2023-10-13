@@ -1,0 +1,26 @@
+﻿<Window x:Class="Minty.View.Update"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Minty.View"
+        mc:Ignorable="d"
+         Height="450" Width="800" WindowStyle="None" Background="Black" ResizeMode="NoResize"  >
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="IMG/StartupBackground.png"/>
+        </Grid.Background>
+        <Border BorderBrush="Black" BorderThickness="1">
+
+            <Button Content="Update" Margin="544,334,35,35" BorderBrush="Black" Background="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS" Click="Update_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Height="123" Margin="509,197,0,0" TextWrapping="Wrap" Text="If you see this dialog Window then turn off the VPN" VerticalAlignment="Top" Width="281" Foreground="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS"/>
+        <Label HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Width="800" MouseDown="DragMove"/>
+    </Grid>
+</Window>
