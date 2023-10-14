@@ -17,8 +17,8 @@
             string LauncherFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.exe");
             string LauncherZipFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.zip");
             string LauncherVersionPath = System.IO.Path.Combine(LauncherFolderPath, "LaunchVer.txt");
-            string LauncherVerUrl = "https://github.com/Kinda-Wetty-Today/LauncherVer/blob/main/LaunchVersion.json";
-            string LauncherUrl = "https://github.com/sad-akulka/LauncherVer/releases/download/1.0/Minty.zip";
+            string LauncherVerUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/LaunchVersion.txt";
+            string LauncherUrl = "https://github.com/Kinda-Wetty-Today/LauncherVer/releases/download/1.0/Minty.zip";
             Directory.CreateDirectory(LauncherFolderPath);
             await DownloadFile(LauncherUrl, LauncherZipFilePath);
             await DownloadFile(LauncherVerUrl, LauncherVersionPath);

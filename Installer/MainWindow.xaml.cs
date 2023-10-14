@@ -44,8 +44,7 @@
         {
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/LaunchVersion.json");
-
+                HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/LaunchVersion.txt");
                 if (response.IsSuccessStatusCode)
                 {
                     string onlineVersion = await response.Content.ReadAsStringAsync();
