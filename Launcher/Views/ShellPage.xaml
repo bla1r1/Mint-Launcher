@@ -10,11 +10,14 @@
     Loaded="OnLoaded">
 
     <Grid>
-        <Grid x:Name="AppTitleBar"
-      Grid.Column="1" 
-      Canvas.ZIndex="1"
-      Height="{Binding ElementName=NavigationViewControl, Path=CompactPaneLength}"
-      VerticalAlignment="Top">
+        <Grid
+              Width="1140"
+              Height="{Binding ElementName=NavigationViewControl, Path=CompactPaneLength}"
+              x:Name="AppTitleBar"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Left">
+        </Grid>
+        <Grid VerticalAlignment="Top">
             <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,48,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 H 10" IsEnabled="true" Click="Minimize"/>
             <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,0,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 L 1 -1 M 1 0 L 0 -1" IsEnabled="true" Click="Close"/>
         </Grid>

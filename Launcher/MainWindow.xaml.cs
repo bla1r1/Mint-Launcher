@@ -19,7 +19,7 @@ public sealed partial class MainWindow : WindowEx
     {
         InitializeComponent();
         GetAppWindowAndPresenter();
-
+        
 
         _presenter.SetBorderAndTitleBar(false, false);
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico"));
