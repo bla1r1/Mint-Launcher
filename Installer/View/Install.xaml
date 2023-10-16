@@ -11,7 +11,7 @@
             <ImageBrush ImageSource="IMG/StartupBackground.png"/>
         </Grid.Background>
         <Border BorderBrush="Black" BorderThickness="1">
-            <Button Content="Install" Margin="544,334,35,35" BorderBrush="Black" Background="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS" Click="Install_Click">
+            <Button x:Name="Button" Content="Install" Margin="544,334,35,35" BorderBrush="Black" Background="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS" Click="Install_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="20"/>
@@ -20,5 +20,6 @@
             </Button>
         </Border>
         <Label HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Width="800" MouseDown="DragMove"/>
+        <ProgressBar x:Name="ProgressBar" Margin="424,394,10,28" Minimum="0" Maximum="100" Visibility="Hidden" />
     </Grid>
 </Window>

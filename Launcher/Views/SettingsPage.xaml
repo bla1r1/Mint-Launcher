@@ -10,12 +10,12 @@
     <Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     </Page.Resources>
-    <Grid>
+    <Grid Background="#1d1c22" >
         <StackPanel Margin="10,5,0,0"
             x:Name="ContentArea">
-            <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="#FFD9CAB3" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                <TextBlock x:Uid="Settings_Theme" />
+                <TextBlock x:Uid="Settings_Theme" Foreground="#FFD9CAB3" />
 
                 <StackPanel Margin="{StaticResource XSmallTopMargin}">
                     <RadioButton
@@ -23,6 +23,7 @@
                         Command="{x:Bind ViewModel.SwitchThemeCommand}"
                         IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}"
                         FontSize="15"
+                        Foreground="#FFD9CAB3"
                         GroupName="AppTheme">
                         <RadioButton.CommandParameter>
                             <xaml:ElementTheme>Light</xaml:ElementTheme>
@@ -33,6 +34,7 @@
                         Command="{x:Bind ViewModel.SwitchThemeCommand}"
                         IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}"
                         FontSize="15"
+                        Foreground="#FFD9CAB3"
                         GroupName="AppTheme">
                         <RadioButton.CommandParameter>
                             <xaml:ElementTheme>Dark</xaml:ElementTheme>
@@ -43,6 +45,7 @@
                         Command="{x:Bind ViewModel.SwitchThemeCommand}"
                         IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}"
                         FontSize="15"
+                        Foreground="#FFD9CAB3"
                         GroupName="AppTheme">
                         <RadioButton.CommandParameter>
                             <xaml:ElementTheme>Default</xaml:ElementTheme>

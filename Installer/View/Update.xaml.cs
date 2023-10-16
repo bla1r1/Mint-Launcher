@@ -2,9 +2,12 @@
 {
     public partial class Update : Window
     {
+        private DispatcherTimer timer;
+        private int currentProgress;
         public Update()
         {
             InitializeComponent();
+            Timer();
         }
         //Metods
         #region
@@ -21,17 +24,38 @@
             string LauncherUrl = "https://github.com/Kinda-Wetty-Today/LauncherVer/releases/download/1.0/Minty.zip";
             Directory.Delete(LauncherFolderPath, true);
             Directory.CreateDirectory(LauncherFolderPath);
-            await DownloadFile(LauncherUrl, LauncherZipFilePath);
-            await DownloadFile(LauncherVerUrl, LauncherVersionPath);
+            Button.Visibility = Visibility.Hidden;
+            ProgressBar.Visibility = Visibility.Visible;
+            ProgressBar.Value = 0;
+            timer.Start();
+            await DownloadFile(LauncherUrl, LauncherZipFilePath, LauncherVerUrl, LauncherVersionPath);
             await ExtractZipFile(LauncherZipFilePath, LauncherFolderPath);
             File.Delete(LauncherZipFilePath);
             LaunchExecutable(LauncherFilePath);
+            ProgressBar.Visibility = Visibility.Hidden;
+            Button.Visibility = Visibility.Visible;
             Environment.Exit(0);
-    }  
+        }
+        #endregion
+        //Progressbar
+        #region
+        private Task Timer()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += Timer_Tick;
+            currentProgress = 0;
+            ProgressBar.Visibility = Visibility.Hidden;
+            return Task.CompletedTask;
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ProgressBar.Value = currentProgress;
+        }
         #endregion
         //Download and Extract
         #region
-        private async Task DownloadFile(string url, string destinationPath)
+        private async Task DownloadFile(string url, string destinationPath, string url2, string destinationPath2)
         {
             try
             {
@@ -39,12 +63,43 @@
                 {
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
+                    HttpResponseMessage response2 = await client.GetAsync(url2);
+                    response2.EnsureSuccessStatusCode();
 
                     using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
+                        long totalBytes = response.Content.Headers.ContentLength ?? -1;
+                        long downloadedBytes = 0;
+                        byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
 
+                        using (Stream contentStream = await response.Content.ReadAsStreamAsync())
+                        {
+                            int bytesRead;
+                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            {
+                                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                                downloadedBytes += bytesRead;
+                                currentProgress = (int)((downloadedBytes * 100) / totalBytes);
+                            }
+                        }
+                    }
+                    using (FileStream fileStream = new FileStream(destinationPath2, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        long totalBytes = response2.Content.Headers.ContentLength ?? -1;
+                        long downloadedBytes = 0;
+                        byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
+
+                        using (Stream contentStream = await response2.Content.ReadAsStreamAsync())
+                        {
+                            int bytesRead;
+                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            {
+                                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                                downloadedBytes += bytesRead;
+                                currentProgress = (int)((downloadedBytes * 100) / totalBytes);
+                            }
+                        }
+                    }
                 }
             }
             catch (HttpRequestException ex)
@@ -59,6 +114,12 @@
             {
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
+            finally
+            {
+                timer.Stop();
+                ProgressBar.Visibility = Visibility.Hidden;
+                currentProgress = 0;
+            }
         }
         private async Task ExtractZipFile(string zipFilePath, string extractionPath)
         {
@@ -68,6 +129,7 @@
                 {
                     ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
                 });
+
             }
             catch (Exception ex)
             {
