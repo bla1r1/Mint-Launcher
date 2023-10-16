@@ -28,7 +28,8 @@
             ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.Value = 0;
             timer.Start();
-            await DownloadFile(LauncherUrl, LauncherZipFilePath, LauncherVerUrl, LauncherVersionPath);
+            await DownloadFile(LauncherUrl, LauncherZipFilePath);
+            await DownloadFile(LauncherVerUrl, LauncherVersionPath);
             await ExtractZipFile(LauncherZipFilePath, LauncherFolderPath);
             File.Delete(LauncherZipFilePath);
             LaunchExecutable(LauncherFilePath);
@@ -55,7 +56,7 @@
         #endregion
         //Download and Extract
         #region
-        private async Task DownloadFile(string url, string destinationPath, string url2, string destinationPath2)
+        private async Task DownloadFile(string url, string destinationPath)
         {
             try
             {
@@ -63,8 +64,6 @@
                 {
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
-                    HttpResponseMessage response2 = await client.GetAsync(url2);
-                    response2.EnsureSuccessStatusCode();
 
                     using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
@@ -73,23 +72,6 @@
                         byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
 
                         using (Stream contentStream = await response.Content.ReadAsStreamAsync())
-                        {
-                            int bytesRead;
-                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                            {
-                                await fileStream.WriteAsync(buffer, 0, bytesRead);
-                                downloadedBytes += bytesRead;
-                                currentProgress = (int)((downloadedBytes * 100) / totalBytes);
-                            }
-                        }
-                    }
-                    using (FileStream fileStream = new FileStream(destinationPath2, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        long totalBytes = response2.Content.Headers.ContentLength ?? -1;
-                        long downloadedBytes = 0;
-                        byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
-
-                        using (Stream contentStream = await response2.Content.ReadAsStreamAsync())
                         {
                             int bytesRead;
                             while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
