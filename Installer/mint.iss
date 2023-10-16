@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "1.0"
+#define MyAppVersion "0.1"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -21,7 +21,7 @@ VersionInfoCompany={#MyAppPublisher}
 AppPublisher={#MyAppPublisher}
 DefaultGroupName={#MyAppSetupName}
 DefaultDirName={autopf}\{#MyAppSetupName}
-UninstallDisplayIcon={app}\Updater.exe
+UninstallDisplayIcon={app}\Minty.exe
 AllowNoIcons=yes
 OutputDir=C:\Users\Blair\Desktop\Mintlauncherinstaller
 OutputBaseFilename=Minty
