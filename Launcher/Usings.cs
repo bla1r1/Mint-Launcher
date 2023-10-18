@@ -50,3 +50,4 @@ global using Microsoft.Xaml.Interactivity;
 global using Microsoft.UI.Dispatching;
 global using Microsoft.Windows.AppLifecycle;
 global using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
+global using DiscordRPC;

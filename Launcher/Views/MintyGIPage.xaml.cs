@@ -1,4 +1,6 @@
-﻿namespace Launcher.Views;
+﻿using System.Diagnostics.Eventing.Reader;
+
+namespace Launcher.Views;
 public sealed partial class MintyGIPage : Page
 {
     public MintyGIViewModel ViewModel
@@ -131,12 +133,22 @@ public sealed partial class MintyGIPage : Page
     {
         try
         {
-            Process.Start(exePath);
+            DiscordRPC();
+            Process process = new Process();
+            process.StartInfo.FileName = exePath;
+            process.EnableRaisingEvents = true;
+
+            process.Exited += new EventHandler(Process_Exited);
+            process.Start();
         }
         catch (Exception ex)
         {
             ShowErrorDialog($"Error launching executable: {ex.Message}");
         }
+    }
+    static void Process_Exited(object sender, EventArgs e)
+    {
+       MainWindow.DiscordRPC();
     }
     #endregion
     //Download and extract metods
@@ -227,7 +239,59 @@ public sealed partial class MintyGIPage : Page
         await ShowInformationDialog("Error", message);
     }
     #endregion
+    //Rcp
+    #region
+    private static readonly DiscordRpcClient client = new DiscordRpcClient("1112360491847778344");
+
+    public static void InitRPC()
+    {
+        client.OnReady += (sender, e) => { };
+
+        client.OnPresenceUpdate += (sender, e) => { };
+
+        client.OnError += (sender, e) => { };
+
+        client.Initialize();
+    }
+
+    public static void UpdateRPC()
+    {
+        
+        var presence = new RichPresence()
+        {
+            State = "Minty",
+            Details = "Hacking MHY <333",
+
+            Assets = new Assets()
+            {
+                LargeImageKey = "idol",
+                SmallImageKey = "gensh",
+                SmallImageText = "Genshin Impact"
+            },
+            Buttons = new DiscordRPC.Button[]
+            {
+                    new DiscordRPC.Button()
+                    {
+                        Label = "Join",
+                        Url = "https://discord.gg/kindawindytoday"
+                    }
+            }
+        };
+        client.SetPresence(presence);
+        client.Invoke();
+    }
+
+    public static void DiscordRPC()
+    {
+        if (!client.IsInitialized)
+        {
+            InitRPC();
+        }
+
+        UpdateRPC();
+    }
     #endregion
+#endregion
 }
 
 

@@ -15,6 +15,7 @@ public sealed partial class MainWindow : WindowEx
     public MainWindow()
     {
         InitializeComponent();
+        DiscordRPC();
         GetAppWindowAndPresenter();
         _presenter.SetBorderAndTitleBar(false, false);
         Content = null;
@@ -30,5 +31,53 @@ public sealed partial class MainWindow : WindowEx
         {
             TitleBarHelper.ApplySystemThemeToCaptionButtons();
         });
-    } 
+    }
+    private static readonly DiscordRpcClient client = new DiscordRpcClient("1155073793224609843");
+
+    public static void InitRPC()
+    {
+        client.OnReady += (sender, e) => { };
+
+        client.OnPresenceUpdate += (sender, e) => { };
+
+        client.OnError += (sender, e) => { };
+
+        client.Initialize();
+    }
+
+    public static void UpdateRPC()
+    {
+        var presence = new RichPresence()
+        {
+            State = "Minty",
+            Details = "Hacking MHY <333",
+
+            Assets = new Assets()
+            {
+                LargeImageKey = "virus",
+                SmallImageKey = "",
+                SmallImageText = "Minty Launcher"
+            },
+            Buttons = new DiscordRPC.Button[]
+            {
+                    new DiscordRPC.Button()
+                    {
+                        Label = "Join",
+                        Url = "https://discord.gg/kindawindytoday"
+                    }
+            }
+        };
+        client.SetPresence(presence);
+        client.Invoke();
+    }
+
+    public static void DiscordRPC()
+    {
+        if (!client.IsInitialized)
+        {
+            InitRPC();
+        }
+
+        UpdateRPC();
+    }
 }
