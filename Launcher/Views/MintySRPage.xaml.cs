@@ -1,4 +1,6 @@
-﻿namespace Launcher.Views;
+﻿using Windows.Media.Protection.PlayReady;
+
+namespace Launcher.Views;
 public sealed partial class MintySRPage : Page
 {
     public MintySRViewModel ViewModel
@@ -131,12 +133,23 @@ public sealed partial class MintySRPage : Page
     {
         try
         {
-            Process.Start(exePath);
+            client.Dispose();
+            DiscordRPC();
+            Process process = new Process();
+            process.StartInfo.FileName = exePath;
+            process.EnableRaisingEvents = true;
+            process.Exited += new EventHandler(Process_Exited);
+            process.Start();
         }
         catch (Exception ex)
         {
             ShowErrorDialog($"Error launching executable: {ex.Message}");
         }
+    }
+    static void Process_Exited(object sender, EventArgs e)
+    {
+        client.Dispose();
+        MainWindow.DiscordRPC();
     }
     #endregion
     //Download and extract metods
@@ -225,6 +238,58 @@ public sealed partial class MintySRPage : Page
     public async void ShowErrorDialog(string message)
     {
         await ShowInformationDialog("Error", message);
+    }
+    #endregion
+    //Rcp
+    #region
+    private static readonly DiscordRpcClient client = new DiscordRpcClient("1155013172382662677");
+
+    public static void InitRPC()
+    {
+        client.OnReady += (sender, e) => { };
+
+        client.OnPresenceUpdate += (sender, e) => { };
+
+        client.OnError += (sender, e) => { };
+
+        client.Initialize();
+    }
+
+    public static void UpdateRPC()
+    {
+
+        var presence = new RichPresence()
+        {
+            State = "Minty",
+            Details = "Hacking MHY <333",
+
+            Assets = new Assets()
+            {
+                LargeImageKey = "virus",
+                SmallImageKey = "starrail-logo",
+                SmallImageText = "Honkai Star Rail"
+            },
+            Buttons = new DiscordRPC.Button[]
+            {
+                    new DiscordRPC.Button()
+                    {
+                        Label = "Join",
+                        Url = "https://discord.gg/kindawindytoday"
+                    }
+            }
+        };
+        client.SetPresence(presence);
+        client.Invoke();
+    }
+
+    public static void DiscordRPC()
+    {
+        if (!client.IsInitialized)
+        {
+            InitRPC();
+        }
+
+        UpdateRPC();
     }
     #endregion
     #endregion

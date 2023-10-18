@@ -133,11 +133,11 @@ public sealed partial class MintyGIPage : Page
     {
         try
         {
+            client.Dispose();
             DiscordRPC();
             Process process = new Process();
             process.StartInfo.FileName = exePath;
             process.EnableRaisingEvents = true;
-
             process.Exited += new EventHandler(Process_Exited);
             process.Start();
         }
@@ -148,7 +148,8 @@ public sealed partial class MintyGIPage : Page
     }
     static void Process_Exited(object sender, EventArgs e)
     {
-       MainWindow.DiscordRPC();
+        client.Dispose();
+        MainWindow.DiscordRPC();
     }
     #endregion
     //Download and extract metods
