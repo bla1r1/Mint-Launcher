@@ -133,7 +133,6 @@ public sealed partial class MintyGIPage : Page
     {
         try
         {
-            client.Dispose();
             DiscordRPC();
             Process process = new Process();
             process.StartInfo.FileName = exePath;
@@ -149,7 +148,6 @@ public sealed partial class MintyGIPage : Page
     static void Process_Exited(object sender, EventArgs e)
     {
         client.Dispose();
-        MainWindow.DiscordRPC();
     }
     #endregion
     //Download and extract metods
