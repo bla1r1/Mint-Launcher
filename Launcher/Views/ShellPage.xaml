@@ -10,8 +10,15 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     Loaded="OnLoaded">
     <Grid>
-        <tb:TaskbarIcon IconSource="\Assets\WindowIcon.ico">
-            
+        <tb:TaskbarIcon IconSource="\Assets\WindowIcon.ico"
+                        ContextMenuMode="ActiveWindow">
+            <tb:TaskbarIcon.ContextFlyout>
+                <MenuFlyout AreOpenCloseAnimationsEnabled="False">
+                    <MenuFlyoutItem Text="Hide Window" Click="Minimize"/>
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem Text="Exit" Click="Close"/>
+                </MenuFlyout>
+            </tb:TaskbarIcon.ContextFlyout>
         </tb:TaskbarIcon>
         <Grid
               Width="1140"
