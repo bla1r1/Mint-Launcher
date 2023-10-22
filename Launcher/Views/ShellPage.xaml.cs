@@ -75,7 +75,26 @@ public sealed partial class ShellPage : Page
     {
        App.MainWindow.Minimize();
     }
-    
 
+    public static async void ShowInformationDialog(string content)
+    {
+        await ShowInformationDialog("Information", content);
+    }
+
+    public static async Task ShowInformationDialog(string title, string content)
+    {
+        ContentDialog errorDialog = new()
+        {
+            Title = title,
+            Content = content,
+            CloseButtonText = "Ok"
+        };
+        await errorDialog.ShowAsync();
+    }
+
+    public static async void ShowErrorDialog(string message)
+    {
+        await ShowInformationDialog("Error", message);
+    }
 
 }

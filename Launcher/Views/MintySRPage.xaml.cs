@@ -32,7 +32,7 @@ public sealed partial class MintySRPage : Page
 
         if (latestRelease == null)
         {
-            ShowErrorDialog("Unable to fetch the latest release.");
+            ShellPage.ShowErrorDialog("Unable to fetch the latest release.");
             return;
         }
 
@@ -49,7 +49,7 @@ public sealed partial class MintySRPage : Page
         {
             if (latestRelease.Assets.Count == 0)
             {
-                ShowErrorDialog("Minty.zip not found. The file name may not match.");
+                ShellPage.ShowErrorDialog("Minty.zip not found. The file name may not match.");
                 return;
             }
 
@@ -61,7 +61,7 @@ public sealed partial class MintySRPage : Page
             Directory.CreateDirectory(assetsFolderPath);
             Directory.CreateDirectory(mintyFolderPath);
 
-            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+            bool downloadSuccess = await DownloadService.DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
 
             if (downloadSuccess)
             {
@@ -70,7 +70,7 @@ public sealed partial class MintySRPage : Page
             }
             else
             {
-                ShowErrorDialog("Failed to download Minty.zip.");
+                ShellPage.ShowErrorDialog("Failed to download Minty.zip.");
             }
         }
         else
@@ -89,7 +89,7 @@ public sealed partial class MintySRPage : Page
                     {
                         if (latestRelease.Assets.Count == 0)
                         {
-                            ShowErrorDialog("Minty.zip not found. The file name may not match.");
+                            ShellPage.ShowErrorDialog("Minty.zip not found. The file name may not match.");
                             return;
                         }
 
@@ -102,12 +102,12 @@ public sealed partial class MintySRPage : Page
                         File.Delete(launcherFilePath);
                         File.Delete(dllFilePath);
 
-                        bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+                        bool downloadSuccess = await DownloadService.DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
 
                         if (downloadSuccess)
                         {
                             GI_button.Content = "Launch";
-                            ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
+                            ShellPage.ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
                             LaunchExecutable(launcherFilePath);
                         }
                     }
@@ -119,12 +119,12 @@ public sealed partial class MintySRPage : Page
                 }
                 else
                 {
-                    ShowErrorDialog($"Incorrect version format on GitHub: {githubVersionTag}");
+                    ShellPage.ShowErrorDialog($"Incorrect version format on GitHub: {githubVersionTag}");
                 }
             }
             else
             {
-                ShowErrorDialog($"Incorrect version format in local file: {verText}");
+                ShellPage.ShowErrorDialog($"Incorrect version format in local file: {verText}");
             }
         }
     }
@@ -142,100 +142,12 @@ public sealed partial class MintySRPage : Page
         }
         catch (Exception ex)
         {
-            ShowErrorDialog($"Error launching executable: {ex.Message}");
+            ShellPage.ShowErrorDialog($"Error launching executable: {ex.Message}");
         }
     }
     static void Process_Exited(object sender, EventArgs e)
     {
         client.Dispose();
-    }
-    #endregion
-    //Download and extract metods
-    #region
-    public async Task<bool> DownloadFilesAsync(string downloadUrl, string verUrl, string zipFilePath, string verFilePath, string assetsFolderPath, string launcherFilePath)
-    {
-        try
-        {
-            using (var httpClient = new HttpClient())
-            {
-                async Task WriteDownloadedBytesToDisk(byte[] content, string filePath)
-                {
-                    await File.WriteAllBytesAsync(filePath, content);
-                }
-                using (var downloadTask = httpClient.GetByteArrayAsync(downloadUrl))
-                {
-                    using (var verTask = httpClient.GetByteArrayAsync(verUrl))
-                    {
-                        var tasks = new[] { downloadTask, verTask };
-                        await Task.WhenAll(tasks);
-                        foreach (var task in tasks)
-                        {
-                            task.Dispose();
-                        }
-                        await WriteDownloadedBytesToDisk(downloadTask.Result, zipFilePath);
-                        await WriteDownloadedBytesToDisk(verTask.Result, verFilePath);
-                    }
-                }
-            }
-
-            await ExtractZipFile(zipFilePath, assetsFolderPath);
-            File.Delete(zipFilePath);
-            return true;
-        }
-        catch (HttpRequestException ex)
-        {
-            ShowErrorDialog($"Error downloading file: {ex.Message}");
-        }
-        catch (IOException ex)
-        {
-            ShowErrorDialog($"Error saving file: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            ShowErrorDialog($"An unexpected error occurred: {ex.Message}");
-        }
-
-        return false;
-    }
-
-    private async Task ExtractZipFile(string zipFilePath, string extractionPath)
-    {
-        try
-        {
-            await Task.Run(() =>
-            {
-                ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
-            });
-
-        }
-        catch (Exception ex)
-        {
-            ShowErrorDialog($"Error while extracting the archive: {ex.Message}");
-        }
-    }
-    #endregion
-    //Error or information metods
-    #region
-    public async void ShowInformationDialog(string content)
-    {
-        await ShowInformationDialog("Information", content);
-    }
-
-    public async Task ShowInformationDialog(string title, string content)
-    {
-        ContentDialog errorDialog = new()
-        {
-            Title = title,
-            Content = content,
-            CloseButtonText = "Ok",
-            XamlRoot = this.XamlRoot
-        };
-        await errorDialog.ShowAsync();
-    }
-
-    public async void ShowErrorDialog(string message)
-    {
-        await ShowInformationDialog("Error", message);
     }
     #endregion
     //Rcp

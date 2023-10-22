@@ -4,12 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tb="using:H.NotifyIcon"
     xmlns:helpers="using:Launcher.Helpers"
     xmlns:behaviors="using:Launcher.Behaviors"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     Loaded="OnLoaded">
-
     <Grid>
+        <tb:TaskbarIcon IconSource="\Assets\WindowIcon.ico">
+            
+        </tb:TaskbarIcon>
         <Grid
               Width="1140"
               Height="{Binding ElementName=NavigationViewControl, Path=CompactPaneLength}"
