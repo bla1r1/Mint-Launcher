@@ -39,41 +39,67 @@ public sealed partial class MintyGIPage : Page
         }
 
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string mintyFolderPath = Path.Combine(appDataFolder, "minty");
+        string mintyFolderPath = Path.Combine(appDataFolder, "Minty");
         string assetsFolderPath = Path.Combine(mintyFolderPath, "MintyGI");
         string launcherFilePath = Path.Combine(assetsFolderPath, "Launcher.exe");
         string dllFilePath = Path.Combine(assetsFolderPath, "minty.dll");
         string zipFilePath = Path.Combine(assetsFolderPath, "minty.zip");
-        string verFilePath = Path.Combine(assetsFolderPath, "VerGI.txt");
-        string verUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/VerGI.txt";
+        string verFilePath = Path.Combine(assetsFolderPath, "VerGI");
+        string verUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/VerGI";
 
-        if (!File.Exists(launcherFilePath))
+        if (!File.Exists(verFilePath))
         {
             if (latestRelease.Assets.Count == 0)
             {
                 ShowErrorDialog("Minty.zip not found. The file name may not match.");
                 return;
             }
-
-            var asset = latestRelease.Assets[0];
-            string downloadUrl = asset.BrowserDownloadUrl;
-
-            GI_button.Content = "Downloading";
-
-            Directory.CreateDirectory(assetsFolderPath);
-            Directory.CreateDirectory(mintyFolderPath);
-
-            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
-
-            if (downloadSuccess)
+            if(!File.Exists(launcherFilePath))
             {
-                GI_button.Content = "Launch";
-                LaunchExecutable(launcherFilePath);
+                var asset = latestRelease.Assets[0];
+                string downloadUrl = asset.BrowserDownloadUrl;
+
+                GI_button.Content = "Downloading";
+
+                Directory.CreateDirectory(assetsFolderPath);
+                Directory.CreateDirectory(mintyFolderPath);
+
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+
+                if (downloadSuccess)
+                {
+                    GI_button.Content = "Launch";
+                    LaunchExecutable(launcherFilePath);
+                }
+                else
+                {
+                    ShowErrorDialog("Failed to download Minty.zip.");
+                }
             }
             else
             {
-                ShowErrorDialog("Failed to download Minty.zip.");
+                Directory.Delete(assetsFolderPath, true);
+                var asset = latestRelease.Assets[0];
+                string downloadUrl = asset.BrowserDownloadUrl;
+
+                GI_button.Content = "Downloading";
+
+                Directory.CreateDirectory(assetsFolderPath);
+                Directory.CreateDirectory(mintyFolderPath);
+
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+
+                if (downloadSuccess)
+                {
+                    GI_button.Content = "Launch";
+                    LaunchExecutable(launcherFilePath);
+                }
+                else
+                {
+                    ShowErrorDialog("Failed to download Minty.zip.");
+                }
             }
+            
         }
         else
         {

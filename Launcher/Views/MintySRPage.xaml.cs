@@ -20,8 +20,8 @@ public sealed partial class MintySRPage : Page
         Random random = new Random();
         int token = random.Next(1, 3);
         string accessToken = null;
-        if (token == 1) { accessToken = "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";}
-        else if (token == 2) { accessToken = "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";}
+        if (token == 1){ accessToken = "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";}
+        else if (token == 2){ accessToken = "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";}
         string owner = "kindawindytoday";
         string repositoryName = "Minty-SR-Releases";
         var client = new GitHubClient(new Octokit.ProductHeaderValue("Launcher"));
@@ -39,41 +39,67 @@ public sealed partial class MintySRPage : Page
         }
 
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string mintyFolderPath = Path.Combine(appDataFolder, "minty");
+        string mintyFolderPath = Path.Combine(appDataFolder, "Minty");
         string assetsFolderPath = Path.Combine(mintyFolderPath, "MintySR");
         string launcherFilePath = Path.Combine(assetsFolderPath, "Launcher.exe");
         string dllFilePath = Path.Combine(assetsFolderPath, "minty.dll");
         string zipFilePath = Path.Combine(assetsFolderPath, "minty.zip");
-        string verFilePath = Path.Combine(assetsFolderPath, "VerSR.txt");
-        string verUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/VerSR.txt";
+        string verFilePath = Path.Combine(assetsFolderPath, "VerSR");
+        string verUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/VerSR";
 
-        if (!File.Exists(launcherFilePath))
+        if (!File.Exists(verFilePath))
         {
             if (latestRelease.Assets.Count == 0)
             {
                 ShowErrorDialog("Minty.zip not found. The file name may not match.");
                 return;
             }
-
-            var asset = latestRelease.Assets[0];
-            string downloadUrl = asset.BrowserDownloadUrl;
-
-            GI_button.Content = "Downloading";
-
-            Directory.CreateDirectory(assetsFolderPath);
-            Directory.CreateDirectory(mintyFolderPath);
-
-            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
-
-            if (downloadSuccess)
+            if (!File.Exists(launcherFilePath))
             {
-                GI_button.Content = "Launch";
-                LaunchExecutable(launcherFilePath);
+                var asset = latestRelease.Assets[0];
+                string downloadUrl = asset.BrowserDownloadUrl;
+
+                GI_button.Content = "Downloading";
+
+                Directory.CreateDirectory(assetsFolderPath);
+                Directory.CreateDirectory(mintyFolderPath);
+
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+
+                if (downloadSuccess)
+                {
+                    GI_button.Content = "Launch";
+                    LaunchExecutable(launcherFilePath);
+                }
+                else
+                {
+                    ShowErrorDialog("Failed to download Minty.zip.");
+                }
             }
             else
             {
-                ShowErrorDialog("Failed to download Minty.zip.");
+                Directory.Delete(assetsFolderPath, true);
+                var asset = latestRelease.Assets[0];
+                string downloadUrl = asset.BrowserDownloadUrl;
+
+                GI_button.Content = "Downloading";
+
+                Directory.CreateDirectory(assetsFolderPath);
+                Directory.CreateDirectory(mintyFolderPath);
+
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
+
+                if (downloadSuccess)
+                {
+                    GI_button.Content = "Launch";
+                    LaunchExecutable(launcherFilePath);
+                }
+                else
+                {
+                    ShowErrorDialog("Failed to download Minty.zip.");
+                }
             }
+
         }
         else
         {
