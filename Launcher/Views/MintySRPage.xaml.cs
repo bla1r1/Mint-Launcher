@@ -45,7 +45,7 @@ public sealed partial class MintySRPage : Page
         string dllFilePath = Path.Combine(assetsFolderPath, "minty.dll");
         string zipFilePath = Path.Combine(assetsFolderPath, "minty.zip");
         string verFilePath = Path.Combine(assetsFolderPath, "VerSR");
-        string verUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/VerSR";
+        string latestReleaseTag = latestRelease.TagName;
 
         if (!File.Exists(verFilePath))
         {
@@ -64,8 +64,11 @@ public sealed partial class MintySRPage : Page
                 Directory.CreateDirectory(assetsFolderPath);
                 Directory.CreateDirectory(mintyFolderPath);
 
-                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
-
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
+                using (StreamWriter writer = new StreamWriter(verFilePath))
+                {
+                    await writer.WriteLineAsync(latestReleaseTag);
+                }
                 if (downloadSuccess)
                 {
                     GI_button.Content = "Launch";
@@ -87,8 +90,11 @@ public sealed partial class MintySRPage : Page
                 Directory.CreateDirectory(assetsFolderPath);
                 Directory.CreateDirectory(mintyFolderPath);
 
-                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
-
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
+                using (StreamWriter writer = new StreamWriter(verFilePath))
+                {
+                    await writer.WriteLineAsync(latestReleaseTag);
+                }
                 if (downloadSuccess)
                 {
                     GI_button.Content = "Launch";
@@ -106,53 +112,53 @@ public sealed partial class MintySRPage : Page
             string verText = await File.ReadAllTextAsync(verFilePath);
             Version? localVersion;
 
-            if (Version.TryParse(verText, out localVersion))
-            {
-                string githubVersionTag = latestRelease.TagName;
-                Version? githubVersion;
-
-                if (Version.TryParse(githubVersionTag, out githubVersion))
-                {
-                    if (localVersion < githubVersion)
-                    {
-                        if (latestRelease.Assets.Count == 0)
-                        {
-                            ShowErrorDialog("Minty.zip not found. The file name may not match.");
-                            return;
-                        }
-
-                        var asset = latestRelease.Assets[0];
-                        string downloadUrl = asset.BrowserDownloadUrl;
-
-                        GI_button.Content = "Downloading";
-
-                        File.Delete(verFilePath);
-                        File.Delete(launcherFilePath);
-                        File.Delete(dllFilePath);
-
-                        bool downloadSuccess = await DownloadFilesAsync(downloadUrl, verUrl, zipFilePath, verFilePath, assetsFolderPath, launcherFilePath);
-
-                        if (downloadSuccess)
-                        {
-                            GI_button.Content = "Launch";
-                            ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
-                            LaunchExecutable(launcherFilePath);
-                        }
-                    }
-                    else
-                    {
-                        GI_button.Content = "Launch";
-                        LaunchExecutable(launcherFilePath);
-                    }
-                }
-                else
-                {
-                    ShowErrorDialog($"Incorrect version format on GitHub: {githubVersionTag}");
-                }
-            }
-            else
+            if (!Version.TryParse(verText, out localVersion))
             {
                 ShowErrorDialog($"Incorrect version format in local file: {verText}");
+                return;
+            }
+
+            string githubVersionTag = latestRelease.TagName;
+            Version? githubVersion;
+
+            if (!Version.TryParse(githubVersionTag, out githubVersion))
+            {
+                ShowErrorDialog($"Incorrect version format on GitHub: {githubVersionTag}");
+                return;
+            }
+
+            if (localVersion >= githubVersion)
+            {
+                GI_button.Content = "Launch";
+                LaunchExecutable(launcherFilePath);
+                return;
+            }
+
+            if (latestRelease.Assets.Count == 0)
+            {
+                ShowErrorDialog("Minty.zip not found. The file name may not match.");
+                return;
+            }
+
+            var asset = latestRelease.Assets[0];
+            string downloadUrl = asset.BrowserDownloadUrl;
+
+            GI_button.Content = "Downloading";
+
+            File.Delete(verFilePath);
+            File.Delete(launcherFilePath);
+            File.Delete(dllFilePath);
+
+            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
+            using (StreamWriter writer = new StreamWriter(verFilePath))
+            {
+                await writer.WriteLineAsync(latestReleaseTag);
+            }
+            if (downloadSuccess)
+            {
+                GI_button.Content = "Launch";
+                ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
+                LaunchExecutable(launcherFilePath);
             }
         }
     }
@@ -164,6 +170,8 @@ public sealed partial class MintySRPage : Page
             DiscordRPC();
             Process process = new Process();
             process.StartInfo.FileName = exePath;
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.Verb = "runas";
             process.EnableRaisingEvents = true;
             process.Exited += new EventHandler(Process_Exited);
             process.Start();
@@ -180,7 +188,7 @@ public sealed partial class MintySRPage : Page
     #endregion
     //Download and Extract
     #region
-    public async Task<bool> DownloadFilesAsync(string downloadUrl, string verUrl, string zipFilePath, string verFilePath, string assetsFolderPath, string launcherFilePath)
+    public async Task<bool> DownloadFilesAsync(string downloadUrl, string zipFilePath, string assetsFolderPath, string launcherFilePath)
     {
         try
         {
@@ -192,17 +200,13 @@ public sealed partial class MintySRPage : Page
                 }
                 using (var downloadTask = httpClient.GetByteArrayAsync(downloadUrl))
                 {
-                    using (var verTask = httpClient.GetByteArrayAsync(verUrl))
+                    var tasks = new[] { downloadTask};
+                    await Task.WhenAll(tasks);
+                    foreach (var task in tasks)
                     {
-                        var tasks = new[] { downloadTask, verTask };
-                        await Task.WhenAll(tasks);
-                        foreach (var task in tasks)
-                        {
-                            task.Dispose();
-                        }
-                        await WriteDownloadedBytesToDisk(downloadTask.Result, zipFilePath);
-                        await WriteDownloadedBytesToDisk(verTask.Result, verFilePath);
+                        task.Dispose();
                     }
+                    await WriteDownloadedBytesToDisk(downloadTask.Result, zipFilePath);
                 }
             }
 
