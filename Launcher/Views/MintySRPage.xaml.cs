@@ -163,27 +163,23 @@ public sealed partial class MintySRPage : Page
         }
     }
 
+
     public void LaunchExecutable(string exePath)
     {
         try
         {
-            DiscordRPC();
+            UpdateRPC("Minty", "Hacking MHY <333");
             Process process = new Process();
             process.StartInfo.FileName = exePath;
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.Verb = "runas";
             process.EnableRaisingEvents = true;
-            process.Exited += new EventHandler(Process_Exited);
             process.Start();
         }
         catch (Exception ex)
         {
             ShowErrorDialog($"Error launching executable: {ex.Message}");
         }
-    }
-    static void Process_Exited(object sender, EventArgs e)
-    {
-        client.Dispose();
     }
     #endregion
     //Download and Extract
@@ -275,25 +271,28 @@ public sealed partial class MintySRPage : Page
     #region
     private static readonly DiscordRpcClient client = new DiscordRpcClient("1155013172382662677");
 
-    public static void InitRPC()
+    public static void InitializeDiscordRPC()
     {
-        client.OnReady += (sender, e) => { };
+        if (!client.IsInitialized)
+        {
+            client.OnReady += (sender, e) => { };
 
-        client.OnPresenceUpdate += (sender, e) => { };
+            client.OnPresenceUpdate += (sender, e) => { };
 
-        client.OnError += (sender, e) => { };
+            client.OnError += (sender, e) => { };
 
-        client.Initialize();
+            client.Initialize();
+        }
     }
 
-    public static void UpdateRPC()
+    public static void UpdateRPC(string state, string details)
     {
+        InitializeDiscordRPC();
 
         var presence = new RichPresence()
         {
-            State = "Minty",
-            Details = "Hacking MHY <333",
-
+            State = state,
+            Details = details,
             Assets = new Assets()
             {
                 LargeImageKey = "virus",
@@ -311,16 +310,6 @@ public sealed partial class MintySRPage : Page
         };
         client.SetPresence(presence);
         client.Invoke();
-    }
-
-    public static void DiscordRPC()
-    {
-        if (!client.IsInitialized)
-        {
-            InitRPC();
-        }
-
-        UpdateRPC();
     }
     #endregion
     #endregion
