@@ -5,65 +5,85 @@
         public MainWindow()
         {
             InitializeComponent();
-            Window_Loaded();
+            Loaded();
         }
         //Metods
         #region
         //CheckVerMetods
         #region
-        private async void Window_Loaded()
+        private async void Loaded()
         {
+            Random random = new Random();
+            int token = random.Next(1, 3);
+            string? accessToken = null;
+            if (token == 1) { accessToken = "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"; }
+            else if (token == 2) { accessToken = "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"; }
+            string owner = "Kinda-Wetty-Today";
+            string repositoryName = "Minty-Launcher-Releases";
+            var client = new GitHubClient(new Octokit.ProductHeaderValue("Launcher"));
+            var tokenAuth = new Credentials(accessToken);
+            client.Credentials = tokenAuth;
+
+            var releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            Release? latestRelease = releases[0];
             string MainFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
             string LauncherFolderPath = System.IO.Path.Combine(MainFolderPath, "Launcher");
             string LauncherFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.exe");
-            if (!File.Exists(LauncherFilePath))
+            string verFilePath = Path.Combine(LauncherFolderPath, "LauncherVer");
+
+            if (latestRelease == null)
+            {
+                MessageBox.Show("Unable to fetch the latest release.");
+                return;
+            }
+            string latestReleaseTag = latestRelease.TagName;
+
+            if (latestRelease.Assets.Count == 0)
+            {
+                MessageBox.Show("Minty.zip not found. The file name may not match.");
+                return;
+            }
+            if (!File.Exists(verFilePath))
             {
                 Install InstallWIndow = new Install();
                 InstallWIndow.Show();
                 this.Close();
-            }
+            } 
             else
             {
-                string onlineVersion = await GetOnlineVersionAsync();
-                string fileVersion = GetFileVersionFromFile();
+                string verText = await File.ReadAllTextAsync(verFilePath);
+                Version? localVersion;
 
-                if (onlineVersion == fileVersion)
+                if (!Version.TryParse(verText, out localVersion))
+                {
+                    MessageBox.Show($"Incorrect version format in local file: {verText}");
+                    return;
+                }
+
+                string githubVersionTag = latestRelease.TagName;
+                Version? githubVersion;
+
+                if (!Version.TryParse(githubVersionTag, out githubVersion))
+                {
+                    MessageBox.Show($"Incorrect version format on GitHub: {githubVersionTag}");
+                    return;
+                }
+
+                if (localVersion >= githubVersion)
                 {
                     LaunchExecutable(LauncherFilePath);
-                    Environment.Exit(0);
+                    return;
                 }
-                else
-                {
-                    Update UpdateWindow = new Update();
-                    UpdateWindow.Show();
-                    this.Close();
-                }
-            }
-        }
-        private async Task<string> GetOnlineVersionAsync()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/LaunchVersion.txt");
-                if (response.IsSuccessStatusCode)
-                {
-                    string onlineVersion = await response.Content.ReadAsStringAsync();
-                    return onlineVersion;
-                }
-                else
-                {
-                    throw new Exception("Failed to download online version.");
-                }
-            }
-        }
 
-        private string GetFileVersionFromFile()
-        {
-            string MainFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-            string LauncherFolderPath = System.IO.Path.Combine(MainFolderPath, "Launcher");
-            string LauncherVersionPath = System.IO.Path.Combine(LauncherFolderPath, "LaunchVer.txt");
-            string LauncherVersionFile = System.IO.File.ReadAllText(LauncherVersionPath);
-            return LauncherVersionFile;
+                if (latestRelease.Assets.Count == 0)
+                {
+                    MessageBox.Show("Minty.zip not found. The file name may not match.");
+                    return;
+                }
+                Update UpdateWindow = new Update();
+                UpdateWindow.Show();
+                this.Close();
+            }
         }
         #endregion
         //Launch

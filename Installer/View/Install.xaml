@@ -4,14 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minty.View"
-        mc:Ignorable="d"
-                Height="450" Width="800" WindowStyle="None" Background="Black" ResizeMode="NoResize"  >
+    mc:Ignorable="d" Height="450" Width="800" WindowStyle="None" AllowsTransparency="True" Background="Black" >
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="IMG/StartupBackground.png"/>
+            <ImageBrush ImageSource="/IMG/StartupBackground.png"/>
         </Grid.Background>
         <Border BorderBrush="Black" BorderThickness="1">
-            <Button x:Name="Button" Content="Install" Margin="544,334,35,35" BorderBrush="Black" Background="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS" Click="Install_Click">
+            <Button x:Name="LAButton" Content="Install" Margin="544,334,35,35" BorderBrush="Black" Background="#FFFFA600" FontSize="30" FontFamily="Comic Sans MS" Click="Install_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="20"/>

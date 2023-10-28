@@ -8,7 +8,7 @@
          Height="450" Width="800" WindowStyle="None" Background="Black" ResizeMode="NoResize"  >
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="IMG/StartupBackground.png"/>
+            <ImageBrush ImageSource="/IMG/StartupBackground.png"/>
         </Grid.Background>
         <Border BorderBrush="Black" BorderThickness="1">
 

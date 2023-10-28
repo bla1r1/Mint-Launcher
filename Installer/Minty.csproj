@@ -5,14 +5,18 @@
 	  <TargetFramework>net6.0-windows</TargetFramework>
 	  <Nullable>enable</Nullable>
 	  <ImplicitUsings>enable</ImplicitUsings>
-	  <ApplicationIcon>View/IMG/virus.ico</ApplicationIcon>
+	  <ApplicationIcon>IMG/virus.ico</ApplicationIcon>
 	  <UseWPF>true</UseWPF>
 	  <ApplicationManifest>app.manifest</ApplicationManifest>
 	  <IsPublishable>False</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="View\IMG\StartupBackground.png" />
+    <PackageReference Include="Octokit" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="IMG\StartupBackground.png" />
   </ItemGroup>
 
 </Project>

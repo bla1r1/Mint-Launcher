@@ -6,5 +6,7 @@ global using System.Diagnostics;
 global using System.Net;
 global using Minty.View;
 global using System.Windows.Input;
-global using System.Windows.Controls;
 global using System.Windows.Threading;
+global using Octokit;
+
+

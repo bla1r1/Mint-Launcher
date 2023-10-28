@@ -7,7 +7,6 @@
         public Update()
         {
             InitializeComponent();
-            Timer();
         }
         //Metods
         #region
@@ -15,107 +14,61 @@
         #region
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
+            Random random = new Random();
+            int token = random.Next(1, 3);
+            string? accessToken = null;
+            if (token == 1) { accessToken = "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"; }
+            else if (token == 2) { accessToken = "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"; }
+            string owner = "Kinda-Wetty-Today";
+            string repositoryName = "Minty-Launcher-Releases";
+            var client = new GitHubClient(new Octokit.ProductHeaderValue("Launcher"));
+            var tokenAuth = new Credentials(accessToken);
+            client.Credentials = tokenAuth;
+
+            var releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            Release? latestRelease = releases[0];
             string MainFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
             string LauncherFolderPath = System.IO.Path.Combine(MainFolderPath, "Launcher");
             string LauncherFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.exe");
             string LauncherZipFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.zip");
-            string LauncherVersionPath = System.IO.Path.Combine(LauncherFolderPath, "LaunchVer.txt");
-            string LauncherVerUrl = "https://raw.githubusercontent.com/Kinda-Wetty-Today/LauncherVer/main/LaunchVersion.txt";
-            string LauncherUrl = "https://github.com/Kinda-Wetty-Today/LauncherVer/releases/download/1.0/Minty.zip";
+            string verFilePath = Path.Combine(LauncherFolderPath, "LauncherVer");
+
+            if (latestRelease == null)
+            {
+                MessageBox.Show("Unable to fetch the latest release.");
+                return;
+            }
+            string latestReleaseTag = latestRelease.TagName;
+
+            if (latestRelease.Assets.Count == 0)
+            {
+                MessageBox.Show("Minty.zip not found. The file name may not match.");
+                return;
+            }
             Directory.Delete(LauncherFolderPath, true);
             Directory.CreateDirectory(LauncherFolderPath);
-            Button.Visibility = Visibility.Hidden;
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.Value = 0;
-            timer.Start();
-            await DownloadFile(LauncherUrl, LauncherZipFilePath);
-            await DownloadFile(LauncherVerUrl, LauncherVersionPath);
-            await ExtractZipFile(LauncherZipFilePath, LauncherFolderPath);
-            File.Delete(LauncherZipFilePath);
-            LaunchExecutable(LauncherFilePath);
-            ProgressBar.Visibility = Visibility.Hidden;
-            Button.Visibility = Visibility.Visible;
-            Environment.Exit(0);
-        }
-        #endregion
-        //Progressbar
-        #region
-        private Task Timer()
-        {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100);
-            timer.Tick += Timer_Tick;
-            currentProgress = 0;
-            ProgressBar.Visibility = Visibility.Hidden;
-            return Task.CompletedTask;
-        }
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            ProgressBar.Value = currentProgress;
-        }
-        #endregion
-        //Download and Extract
-        #region
-        private async Task DownloadFile(string url, string destinationPath)
-        {
-            try
+            var asset = latestRelease.Assets[0];
+            string downloadUrl = asset.BrowserDownloadUrl;
+            Directory.CreateDirectory(LauncherFolderPath);
+            using (StreamWriter writer = new StreamWriter(verFilePath))
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    using (FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        long totalBytes = response.Content.Headers.ContentLength ?? -1;
-                        long downloadedBytes = 0;
-                        byte[] buffer = new byte[8192]; // Размер буфера для считывания данных
-
-                        using (Stream contentStream = await response.Content.ReadAsStreamAsync())
-                        {
-                            int bytesRead;
-                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                            {
-                                await fileStream.WriteAsync(buffer, 0, bytesRead);
-                                downloadedBytes += bytesRead;
-                                currentProgress = (int)((downloadedBytes * 100) / totalBytes);
-                            }
-                        }
-                    }
-                }
+                await writer.WriteLineAsync(latestReleaseTag);
             }
-            catch (HttpRequestException ex)
+            Button.Content = "Downloading";
+            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, LauncherZipFilePath, LauncherFolderPath);
+            using (StreamWriter writer = new StreamWriter(verFilePath))
             {
-                MessageBox.Show($"Error downloading file: {ex.Message}");
+                await writer.WriteLineAsync(latestReleaseTag);
             }
-            catch (IOException ex)
+            if (downloadSuccess)
             {
-                MessageBox.Show($"Error saving file: {ex.Message}");
+                MessageBox.Show($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
+                LaunchExecutable(LauncherFilePath);
+                Environment.Exit(0);
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-            }
-            finally
-            {
-                timer.Stop();
-                ProgressBar.Visibility = Visibility.Hidden;
-                currentProgress = 0;
-            }
-        }
-        private async Task ExtractZipFile(string zipFilePath, string extractionPath)
-        {
-            try
-            {
-                await Task.Run(() =>
-                {
-                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
-                });
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error while extracting the archive: " + ex.Message);
+                MessageBox.Show("Failed to download Minty.zip.");
             }
         }
         #endregion
@@ -132,7 +85,67 @@
                 MessageBox.Show($"Error launching executable: {ex.Message}");
             }
         }
-        #endregion   
+        #endregion
+        //Download and Extract
+        #region
+        public async Task<bool> DownloadFilesAsync(string downloadUrl, string zipFilePath, string assetsFolderPath)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    async Task WriteDownloadedBytesToDisk(byte[] content, string filePath)
+                    {
+                        await File.WriteAllBytesAsync(filePath, content);
+                    }
+                    using (var downloadTask = httpClient.GetByteArrayAsync(downloadUrl))
+                    {
+                        var tasks = new[] { downloadTask };
+                        await Task.WhenAll(tasks);
+                        foreach (var task in tasks)
+                        {
+                            task.Dispose();
+                        }
+                        await WriteDownloadedBytesToDisk(downloadTask.Result, zipFilePath);
+                    }
+                }
+
+                await ExtractZipFile(zipFilePath, assetsFolderPath);
+                File.Delete(zipFilePath);
+                return true;
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error downloading file: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Error saving file: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+            }
+
+            return false;
+        }
+
+        private async Task ExtractZipFile(string zipFilePath, string extractionPath)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    ZipFile.ExtractToDirectory(zipFilePath, extractionPath);
+                });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while extracting the archive: {ex.Message}");
+            }
+        }
+        #endregion
         //DragMove and Close
         #region
         private void Close(object sender, RoutedEventArgs e)

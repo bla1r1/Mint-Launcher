@@ -19,7 +19,7 @@ public sealed partial class MintyGIPage : Page
     {
         Random random = new Random();
         int token = random.Next(1, 3);
-        string accessToken = null;
+        string? accessToken = null;
         if (token == 1){accessToken = "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";}
         else if (token == 2){accessToken = "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";}
         string owner = "kindawindytoday";
