@@ -9,7 +9,7 @@
 #include "CodeDependencies.iss"
 [Setup]
 #define MyAppSetupName "Minty"
-#define MyAppVersion "0.2"
+#define MyAppVersion "0.2.2"
 #define MyAppPublisher "KW Team"
 #define MyAppExeName "Minty.exe"
 
@@ -25,7 +25,7 @@ UninstallDisplayIcon={app}\Minty.exe
 AllowNoIcons=yes
 OutputDir=C:\Users\Blair\Desktop\Mintlauncherinstaller
 OutputBaseFilename=Minty
-SetupIconFile=View\IMG\virus.ico
+SetupIconFile=IMG\virus.ico
 Compression=lzma
 SolidCompression=yes
 DisableWelcomePage=False
@@ -43,9 +43,9 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "bin\Release\net6.0-windows\Minty.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net6.0-windows\Minty.deps.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net6.0-windows\Minty.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net6.0-windows\Minty.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net6.0-windows\Octokit.dll"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"

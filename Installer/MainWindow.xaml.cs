@@ -72,6 +72,7 @@
                 if (localVersion >= githubVersion)
                 {
                     LaunchExecutable(LauncherFilePath);
+                    Environment.Exit(0);
                     return;
                 }
 
