@@ -55,8 +55,6 @@ public sealed partial class MintyGIPage : Page
                 ShowErrorDialog("Minty.zip not found. The file name may not match.");
                 return;
             }
-            if(!File.Exists(launcherFilePath))
-            {
                 var asset = latestRelease.Assets[0];
                 string downloadUrl = asset.BrowserDownloadUrl;
 
@@ -78,35 +76,7 @@ public sealed partial class MintyGIPage : Page
                 else
                 {
                     ShowErrorDialog("Failed to download Minty.zip.");
-                }
-            }
-            else
-            {
-                Directory.Delete(assetsFolderPath, true);
-                var asset = latestRelease.Assets[0];
-                string downloadUrl = asset.BrowserDownloadUrl;
-
-                GI_button.Content = "Downloading";
-
-                Directory.CreateDirectory(assetsFolderPath);
-                Directory.CreateDirectory(mintyFolderPath);
-
-                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
-                using (StreamWriter writer = new StreamWriter(verFilePath))
-                {
-                    await writer.WriteLineAsync(latestReleaseTag);
-                }
-                if (downloadSuccess)
-                {
-                    GI_button.Content = "Launch";
-                    LaunchExecutable(launcherFilePath);
-                }
-                else
-                {
-                    ShowErrorDialog("Failed to download Minty.zip.");
-                }
-            }
-            
+                } 
         }
         else
         {
@@ -127,6 +97,11 @@ public sealed partial class MintyGIPage : Page
                 ShowErrorDialog($"Incorrect version format on GitHub: {githubVersionTag}");
                 return;
             }
+            if (latestRelease.Assets.Count == 0)
+            {
+                ShowErrorDialog("Minty.zip not found. The file name may not match.");
+                return;
+            }
 
             if (localVersion >= githubVersion)
             {
@@ -135,31 +110,29 @@ public sealed partial class MintyGIPage : Page
                 return;
             }
 
-            if (latestRelease.Assets.Count == 0)
+            if (localVersion == githubVersion)
             {
-                ShowErrorDialog("Minty.zip not found. The file name may not match.");
+                var asset = latestRelease.Assets[0];
+                string downloadUrl = asset.BrowserDownloadUrl;
+
+                GI_button.Content = "Downloading";
+
+                File.Delete(verFilePath);
+                File.Delete(launcherFilePath);
+                File.Delete(dllFilePath);
+
+                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
+                using (StreamWriter writer = new StreamWriter(verFilePath))
+                {
+                    await writer.WriteLineAsync(latestReleaseTag);
+                }
+                if (downloadSuccess)
+                {
+                    GI_button.Content = "Launch";
+                    ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
+                    LaunchExecutable(launcherFilePath);
+                }
                 return;
-            }
-
-            var asset = latestRelease.Assets[0];
-            string downloadUrl = asset.BrowserDownloadUrl;
-
-            GI_button.Content = "Downloading";
-
-            File.Delete(verFilePath);
-            File.Delete(launcherFilePath);
-            File.Delete(dllFilePath);
-
-            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
-            using (StreamWriter writer = new StreamWriter(verFilePath))
-            {
-                await writer.WriteLineAsync(latestReleaseTag);
-            }
-            if (downloadSuccess)
-            {
-                GI_button.Content = "Launch";
-                ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
-                LaunchExecutable(launcherFilePath);
             }
         }
     }

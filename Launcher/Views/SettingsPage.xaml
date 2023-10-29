@@ -10,7 +10,7 @@
     <Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     </Page.Resources>
-    <Grid Background="#1d1c22" >
+    <Grid>
         <StackPanel Margin="10,5,0,0"
             x:Name="ContentArea">
             <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="#FFD9CAB3" />

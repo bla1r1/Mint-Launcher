@@ -28,8 +28,8 @@
               HorizontalAlignment="Left">
         </Grid>
         <Grid VerticalAlignment="Top">
-            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,48,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 H 10" IsEnabled="true" Click="Minimize"/>
-            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,0,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 L 1 -1 M 1 0 L 0 -1" IsEnabled="true" Click="Close"/>
+            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,48,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 H 10" IsEnabled="true" Click="Minimize" Foreground="Black"/>
+            <Button HorizontalAlignment="Right" Width="48" Height="48" Margin="0,0,0,0" Style="{StaticResource WindowCaptionButton}" Content="M 0 0 L 1 -1 M 1 0 L 0 -1" IsEnabled="true" Click="Close" Foreground="Black"/>
         </Grid>
         <NavigationView
             x:Name="NavigationViewControl"
