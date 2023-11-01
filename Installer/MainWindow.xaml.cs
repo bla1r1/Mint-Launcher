@@ -30,7 +30,18 @@
             string LauncherFolderPath = System.IO.Path.Combine(MainFolderPath, "Launcher");
             string LauncherFilePath = System.IO.Path.Combine(LauncherFolderPath, "Launcher.exe");
             string verFilePath = Path.Combine(LauncherFolderPath, "LauncherVer");
-
+            string LogFilePath = System.IO.Path.Combine(MainFolderPath, "Launcherlog");
+            if (File.Exists(LogFilePath))
+            {
+            }
+            else
+            {
+                    Video VideoWIndow = new Video();
+                    VideoWIndow.Show();
+                    this.Close();
+                    return;
+                    
+            }
             if (latestRelease == null)
             {
                 MessageBox.Show("Unable to fetch the latest release.");
