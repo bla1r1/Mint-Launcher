@@ -63,9 +63,8 @@ begin
 
 #ifdef Dependency_Path_NetCoreCheck
   Dependency_AddDotNet70;
-  Dependency_AddDotNet70Asp;
   Dependency_AddDotNet70Desktop;
 #endif
-
+  Dependency_AddVC2015To2022;
   Result := True;
 end;
