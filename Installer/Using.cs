@@ -8,5 +8,6 @@ global using Minty.View;
 global using System.Windows.Input;
 global using System.Windows.Threading;
 global using Octokit;
+global using FileMode = System.IO.FileMode;
 
 

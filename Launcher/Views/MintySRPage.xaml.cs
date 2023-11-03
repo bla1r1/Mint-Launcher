@@ -108,31 +108,27 @@ public sealed partial class MintySRPage : Page
                 LaunchExecutable(launcherFilePath);
                 return;
             }
+            var asset = latestRelease.Assets[0];
+            string downloadUrl = asset.BrowserDownloadUrl;
 
-            if (localVersion == githubVersion)
+            GI_button.Content = "Downloading";
+
+            File.Delete(verFilePath);
+            File.Delete(launcherFilePath);
+            File.Delete(dllFilePath);
+
+            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
+            using (StreamWriter writer = new StreamWriter(verFilePath))
             {
-                var asset = latestRelease.Assets[0];
-                string downloadUrl = asset.BrowserDownloadUrl;
-
-                GI_button.Content = "Downloading";
-
-                File.Delete(verFilePath);
-                File.Delete(launcherFilePath);
-                File.Delete(dllFilePath);
-
-                bool downloadSuccess = await DownloadFilesAsync(downloadUrl, zipFilePath, assetsFolderPath, launcherFilePath);
-                using (StreamWriter writer = new StreamWriter(verFilePath))
-                {
-                    await writer.WriteLineAsync(latestReleaseTag);
-                }
-                if (downloadSuccess)
-                {
-                    GI_button.Content = "Launch";
-                    ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
-                    LaunchExecutable(launcherFilePath);
-                }
-                return;
+                await writer.WriteLineAsync(latestReleaseTag);
             }
+            if (downloadSuccess)
+            {
+                GI_button.Content = "Launch";
+                ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
+                LaunchExecutable(launcherFilePath);
+            }
+
         }
     }
 

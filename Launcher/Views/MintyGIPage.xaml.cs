@@ -109,9 +109,6 @@ public sealed partial class MintyGIPage : Page
                 LaunchExecutable(launcherFilePath);
                 return;
             }
-
-            if (localVersion == githubVersion)
-            {
                 var asset = latestRelease.Assets[0];
                 string downloadUrl = asset.BrowserDownloadUrl;
 
@@ -132,8 +129,7 @@ public sealed partial class MintyGIPage : Page
                     ShowInformationDialog($"Minty updated to version: {await File.ReadAllTextAsync(verFilePath)}");
                     LaunchExecutable(launcherFilePath);
                 }
-                return;
-            }
+           
         }
     }
 
