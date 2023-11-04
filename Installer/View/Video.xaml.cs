@@ -8,7 +8,7 @@
             Video1();
 
         }
-        public async Task Video1()
+        public async void Video1()
         {
             string MainFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
             string LogFilePath = System.IO.Path.Combine(MainFolderPath, "Launcherlog");

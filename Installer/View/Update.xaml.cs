@@ -2,8 +2,6 @@
 {
     public partial class Update : Window
     {
-        private DispatcherTimer timer;
-        private int currentProgress;
         public Update()
         {
             InitializeComponent();

@@ -11,7 +11,7 @@
         #region
         //CheckVerMetods
         #region
-        private async void Loaded()
+        private new async void Loaded()
         {
             Random random = new Random();
             int token = random.Next(1, 3);
@@ -47,7 +47,7 @@
                 MessageBox.Show("Unable to fetch the latest release.");
                 return;
             }
-            string latestReleaseTag = latestRelease.TagName;
+            
 
             if (latestRelease.Assets.Count == 0)
             {
