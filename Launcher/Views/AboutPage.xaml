@@ -7,11 +7,11 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="154,122,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="538" Width="1065" Foreground="#FFD9CAB3" FontSize="48">
+        <TextBlock HorizontalAlignment="Left" Margin="154,122,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="538" Width="1065" Foreground="#FFD9CAB3" FontSize="40">
             <Run Text="It's launcher for GI/SR cheat &quot;Minty&quot;"/>
             <LineBreak/><Run Text="Minty developers: hoyokprotect,moistcrafter"/>
-            <LineBreak/><Run Text="Launcher developers: bla1r_"/>
-            <LineBreak/><Run Text="Design:              "/>
+            <LineBreak/><Run Text="Launcher developers: bla1r_, Saikari"/>
+            <LineBreak/><Run Text="Design:"/>
             <LineBreak/><Run Text="Special thanks: notconst,windseed"/>
         </TextBlock>
     </Grid>

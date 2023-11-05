@@ -12,6 +12,8 @@
         #region
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
+            Button.IsEnabled = false;
+            Button.Content = "Downloading";
             Random random = new Random();
             int token = random.Next(1, 3);
             string? accessToken = null;
@@ -52,7 +54,6 @@
             {
                 await writer.WriteLineAsync(latestReleaseTag);
             }
-            Button.Content = "Downloading";
             bool downloadSuccess = await DownloadFilesAsync(downloadUrl, LauncherZipFilePath, LauncherFolderPath);
             using (StreamWriter writer = new StreamWriter(verFilePath))
             {

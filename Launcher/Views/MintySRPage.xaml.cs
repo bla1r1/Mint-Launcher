@@ -46,7 +46,7 @@ public sealed partial class MintySRPage : Page
         string zipFilePath = Path.Combine(assetsFolderPath, "minty.zip");
         string verFilePath = Path.Combine(assetsFolderPath, "VerSR");
         string latestReleaseTag = latestRelease.TagName;
-
+        GI_button.IsEnabled = false;
         if (!File.Exists(verFilePath))
         {
             if (latestRelease.Assets.Count == 0)
@@ -137,6 +137,7 @@ public sealed partial class MintySRPage : Page
     {
         try
         {
+            GI_button.IsEnabled = true;
             UpdateRPC("Minty", "Hacking MHY <333");
             Process process = new Process();
             process.StartInfo.FileName = exePath;

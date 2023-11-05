@@ -8,7 +8,8 @@
         }
         private async void Install_Click(object sender, RoutedEventArgs e)
         {
-            LAButton.Content = "Downloading";
+            Button.IsEnabled = false;
+            Button.Content = "Downloading";
             Random random = new Random();
             int token = random.Next(1, 3);
             string? accessToken = null;
