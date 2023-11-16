@@ -6,6 +6,8 @@
         {
             InitializeComponent();
         }
+        //Launch
+        #region
         private async void Install_Click(object sender, RoutedEventArgs e)
         {
             Button.IsEnabled = false;
@@ -49,7 +51,7 @@
                 await writer.WriteLineAsync(latestReleaseTag);
             }
 
-            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, LauncherZipFilePath, LauncherFolderPath);         
+            bool downloadSuccess = await DownloadFilesAsync(downloadUrl, LauncherZipFilePath, LauncherFolderPath);
             using (StreamWriter writer = new StreamWriter(verFilePath))
             {
                 await writer.WriteLineAsync(latestReleaseTag);
@@ -64,8 +66,6 @@
                 MessageBox.Show("Failed to download Minty.zip.");
             }
         }
-        //Launch
-        #region
         private void LaunchExecutable(string exePath)
         {
             try
@@ -140,13 +140,18 @@
         #endregion
         //DragMove and Close
         #region
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            Environment.Exit(0);
-        }
         private void DragMove(object sender, MouseButtonEventArgs e)
         {
             DragMove();
+        }
+        private void Bonov(object sender, RoutedEventArgs e)
+        {
+            string link = "https://www.youtube.com/watch?si=_mj1PTsrszFs-aL1&v=XID1iLmB8ag&feature=youtu.be&ab_channel=%D0%A0%D0%B0%D0%B4%D0%B8%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8%D0%B9%D0%9A%D0%BE%D0%BC%D0%BF%D1%81%D0%BE%D0%B3%D0%BD%D0%B0%D1%82%D0%B8%D0%B7%D0%BC";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = link,
+                UseShellExecute = true
+            });
         }
         #endregion
     }

@@ -19,6 +19,6 @@
             </Button>
         </Border>
         <Label HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Width="800" MouseDown="DragMove"/>
-        <ProgressBar x:Name="ProgressBar" Margin="424,394,10,28" Minimum="0" Maximum="100" Visibility="Hidden" />
+        <Button HorizontalAlignment="Left" Height="65" Margin="111,225,0,0" VerticalAlignment="Top" Width="137" RenderTransformOrigin="0.5,0.5" Background="Transparent" Click="Bonov" BorderBrush="Transparent"/>
     </Grid>
 </Window>
